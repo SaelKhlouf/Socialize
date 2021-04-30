@@ -4,8 +4,9 @@ import React from "react";
 
 interface Props{
     activity: Activity;
+    handleCancelActivity: () => void;
 }
-export default function ActivityDetails({activity}: Props){
+export default function ActivityDetails({activity, handleCancelActivity}: Props){
     return (
         <Card fluid>
             <Image src='/assets/categoryImages/drinks.jpg' />
@@ -23,7 +24,7 @@ export default function ActivityDetails({activity}: Props){
                     <Button basic color='green'>
                         Edit
                     </Button>
-                    <Button basic color='red'>
+                    <Button basic color='red'  onClick={handleCancelActivity}>
                         Cancel
                     </Button>
                 </Button.Group>
