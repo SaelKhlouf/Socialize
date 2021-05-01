@@ -1,7 +1,11 @@
 import {Button, Container, Image, Menu} from "semantic-ui-react";
 import React, {Fragment} from 'react';
 
-export default function NavBar() {
+interface Props {
+    handleOpenEditActivityForm: () => void;
+}
+
+export default function NavBar({handleOpenEditActivityForm}: Props) {
     return (
         <Fragment>
             <Menu inverted fixed='top'>
@@ -12,7 +16,7 @@ export default function NavBar() {
                     </Menu.Item>
                     <Menu.Item>Activities</Menu.Item>
                     <Menu.Item>
-                        <Button primary>Create Activity</Button>
+                        <Button primary onClick={handleOpenEditActivityForm}>Create Activity</Button>
                     </Menu.Item>
                 </Container>
             </Menu>

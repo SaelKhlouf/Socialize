@@ -1,7 +1,11 @@
 import React from "react";
 import {Button, Form, Segment, TextArea} from "semantic-ui-react";
 
-export default function ActivityEditForm() {
+interface Props {
+    handleCancelEditActivityForm: () => void;
+}
+
+export default function ActivityCreateAndEditForm({handleCancelEditActivityForm}: Props) {
     return (
         <Segment clearing>
             <Form>
@@ -15,6 +19,9 @@ export default function ActivityEditForm() {
                     <input placeholder='Category'/>
                 </Form.Field>
                 <Form.Field>
+                    <input placeholder='Date'/>
+                </Form.Field>
+                <Form.Field>
                     <input placeholder='City'/>
                 </Form.Field>
                 <Form.Field>
@@ -22,7 +29,7 @@ export default function ActivityEditForm() {
                 </Form.Field>
 
                 <Button primary floated="right" type='submit'>Submit</Button>
-                <Button secondary floated="left" type='button'>Cancel</Button>
+                <Button secondary floated="left" type='button' onClick={handleCancelEditActivityForm}>Cancel</Button>
             </Form>
         </Segment>
     );

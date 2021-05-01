@@ -13,11 +13,23 @@ function App() {
         });
     }, []);
 
+    const [activityEditMode, setActivityEditMode] = useState(false);
+
+    const handleOpenEditActivityForm = () => {
+        setActivityEditMode(true);
+    }
+
+    const handleCancelEditActivityForm = () => {
+        setActivityEditMode(false);
+    }
+
     return (
         <Fragment>
-            <NavBar/>
+            <NavBar handleOpenEditActivityForm={handleOpenEditActivityForm}/>
             <Container style={{marginTop: '8em'}}>
-                <Dashboard activities={activities} />
+                <Dashboard activities={activities} activityEditMode={activityEditMode}
+                           handleOpenEditActivityForm={handleOpenEditActivityForm}
+                           handleCancelEditActivityForm={handleCancelEditActivityForm}/>
             </Container>
         </Fragment>
     );
