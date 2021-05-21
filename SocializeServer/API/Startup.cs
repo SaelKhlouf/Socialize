@@ -14,6 +14,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Domain.Activities;
+using FluentValidation.AspNetCore;
 
 namespace API
 {
@@ -29,7 +31,10 @@ namespace API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers().AddFluentValidation(config =>
+            {
+                config.RegisterValidatorsFromAssemblyContaining<ActivityValidator>(); // the assembly of ActivityValidator is the Domain project !, so all validators in Domain project will be registered.
+            });
             services.AddApplicationServices(_config);
         }
 
