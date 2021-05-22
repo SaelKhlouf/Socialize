@@ -10,6 +10,7 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Domain.Activities;
 using Domain.Core;
+using Microsoft.AspNetCore.Http;
 
 namespace Application.Services
 {
@@ -41,7 +42,12 @@ namespace Application.Services
 
         public async Task<Activity> GetByIdAsync(Guid id)
         {
-            return await _activitiesRepository.GetByIdAsync(id);
+            Activity activity = await _activitiesRepository.GetByIdAsync(id);
+            if (activity == null)
+            {
+                throw new BadHttpRequestException("Activity not found");
+            }
+            return activity;
         }
 
         public async Task<Activity> PostAsync(ActivityRequest activityRequest)
@@ -53,6 +59,10 @@ namespace Application.Services
         public async Task DeleteAsync(Guid id)
         {
             Activity activity = await _activitiesRepository.GetByIdAsync(id);
+            if (activity == null)
+            {
+                throw new BadHttpRequestException("Activity not found");
+            }
             await _activitiesRepository.DeleteAsync(activity);
         }
     }
