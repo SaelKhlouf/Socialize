@@ -20,6 +20,7 @@ namespace Persistence.Repositories
         public async Task<T> PostAsync(T entity)
         {
             await _context.Set<T>().AddAsync(entity);
+            await _context.SaveChangesAsync();
             return entity;
         }
 

@@ -49,5 +49,11 @@ namespace Application.Services
             Activity activity = _mapper.Map<Activity>(activityRequest);
             return await _activitiesRepository.PostAsync(activity);
         }
+
+        public async Task DeleteAsync(Guid id)
+        {
+            Activity activity = await _activitiesRepository.GetByIdAsync(id);
+            await _activitiesRepository.DeleteAsync(activity);
+        }
     }
 }

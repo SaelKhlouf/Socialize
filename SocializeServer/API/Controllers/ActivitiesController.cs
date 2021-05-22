@@ -32,18 +32,25 @@ namespace API.Controllers
             return Ok(_mapper.Map<DataList<ActivityDto>>(response));
         }
 
-        [HttpGet(":id")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetActivityById(Guid id)
         {
             var response = await _activitiesService.GetByIdAsync(id);
             return Ok(_mapper.Map<ActivityDto>(response));
         }
 
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteActivityById(Guid id)
+        {
+            await _activitiesService.DeleteAsync(id);
+            return Ok();
+        }
+
         [HttpPost]
         public async Task<IActionResult> Post(ActivityRequest activity)
         {
             var response = await _activitiesService.PostAsync(activity);
-            return Ok(_mapper.Map<ActivityDto>(response));
+            return CreatedAtAction(nameof(GetActivityById), new { id = response.Id }, _mapper.Map<ActivityDto>(response));
         }
     }
 }
