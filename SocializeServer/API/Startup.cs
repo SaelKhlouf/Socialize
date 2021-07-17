@@ -24,6 +24,7 @@ namespace API
     public class Startup
     {
         private readonly IConfiguration _config;
+        private readonly string _myAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
         public Startup(IConfiguration config)
         {
@@ -51,6 +52,14 @@ namespace API
             {
                 options.SuppressModelStateInvalidFilter = true;
             });
+            services.AddCors(options =>
+            {
+                options.AddPolicy(_myAllowSpecificOrigins,
+                    builder =>
+                    {
+                        builder.WithOrigins("http://localhost:3000");
+                    });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -67,6 +76,8 @@ namespace API
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors(_myAllowSpecificOrigins);
 
             app.UseAuthorization();
 
