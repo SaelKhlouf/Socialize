@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using API.Filters;
 using AutoMapper;
 using Domain.Activities;
 using Domain.Core;

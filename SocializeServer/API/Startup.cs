@@ -14,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using API.Filters;
 using API.Middlewares;
 using Domain.Activities;
 using FluentValidation.AspNetCore;
@@ -32,11 +33,24 @@ namespace API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers().AddFluentValidation(config =>
-            {
-                config.RegisterValidatorsFromAssemblyContaining<ActivityValidator>(); // the assembly of ActivityValidator is the Domain project !, so all validators in Domain project will be registered.
-            });
+            services
+
+                .AddControllers(conf =>
+                {
+                    conf.Filters.Add<RequestValidationFilter>();
+                })
+                .AddFluentValidation(config =>
+                {
+                    config
+                        .RegisterValidatorsFromAssemblyContaining<
+                            ActivityValidator>(); // the assembly of ActivityValidator is the Domain project !, so all validators in Domain project will be registered.
+                });
+
             services.AddApplicationServices(_config);
+            services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.SuppressModelStateInvalidFilter = true;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

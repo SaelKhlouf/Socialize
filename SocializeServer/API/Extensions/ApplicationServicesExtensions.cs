@@ -1,15 +1,11 @@
-﻿using Application.Services;
+﻿using API.Filters;
+using Application.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Persistence;
 using Persistence.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using API.Middlewares;
 using Domain.Core;
 
 namespace API.Extensions
