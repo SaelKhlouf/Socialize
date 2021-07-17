@@ -15,7 +15,7 @@ export function ActivitiesList(props: Props) {
                 {
                     props.activities.map((activity) => (
                         <Item key={activity.id}>
-                            <Item.Image src='/assets/categoryImages/culture.jpg'/>
+                            <Item.Image src={`/assets/categoryImages/${activity.category}.jpg`}/>
                             <Item.Content>
                                 <Item.Header as='h2'>{activity.title}</Item.Header>
                                 <Item.Meta>{activity.category}</Item.Meta>

@@ -11,7 +11,7 @@ interface Props {
 export default function ActivityDetails({activity, handleCancelActivity, handleOpenEditActivityForm}: Props) {
     return (
         <Card fluid>
-            <Image src='/assets/categoryImages/drinks.jpg'/>
+            <Image src={`/assets/categoryImages/${activity.category}.jpg`}/>
             <Card.Content>
                 <Card.Header>{activity.title}</Card.Header>
                 <Card.Meta>

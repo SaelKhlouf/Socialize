@@ -7,3 +7,7 @@ export interface Activity {
     city: string;
     venue: string;
 }
+
+export interface Activities {
+    data: Activity[];
+}
