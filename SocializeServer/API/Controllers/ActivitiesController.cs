@@ -27,6 +27,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(DataList<ActivityDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get([FromQuery] PagingParams pagingParams)
         {
             var response = await _activitiesService.ListAsync(pagingParams);
@@ -34,24 +35,27 @@ namespace API.Controllers
         }
 
         [HttpGet("{id}")]
+        [ProducesResponseType(typeof(ActivityDto), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetActivityById(Guid id)
         {
             var response = await _activitiesService.GetByIdAsync(id);
             return Ok(_mapper.Map<ActivityDto>(response));
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteActivityById(Guid id)
-        {
-            await _activitiesService.DeleteAsync(id);
-            return Ok();
-        }
-
         [HttpPost]
+        [ProducesResponseType(typeof(ActivityDto), StatusCodes.Status201Created)]
         public async Task<IActionResult> Post(ActivityRequest activity)
         {
             var response = await _activitiesService.PostAsync(activity);
             return CreatedAtAction(nameof(GetActivityById), new { id = response.Id }, _mapper.Map<ActivityDto>(response));
+        }
+
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<IActionResult> DeleteActivityById(Guid id)
+        {
+            await _activitiesService.DeleteAsync(id);
+            return NoContent();
         }
     }
 }

@@ -14,7 +14,7 @@ namespace API
 {
     public class Program
     {
-        public async static Task Main(string[] args)
+        public static async Task Main(string[] args)
         {
             IHost host = CreateHostBuilder(args).Build();
             using IServiceScope scope = host.Services.CreateScope();
@@ -24,7 +24,7 @@ namespace API
             try
             {
                 ApplicationDbContext context = services.GetRequiredService<ApplicationDbContext>(); // Service locator pattern
-                context.Database.Migrate();
+                await context.Database.MigrateAsync();
                 await Seed.SeedData(context);
             }
             catch (Exception ex)
@@ -32,7 +32,7 @@ namespace API
                 ILogger<Program> logger = services.GetRequiredService<ILogger<Program>>();
                 logger.LogError(ex, "An error occurred during migration");
             }
-            host.Run(); // Run the application
+            await host.RunAsync(); // Run the application
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
