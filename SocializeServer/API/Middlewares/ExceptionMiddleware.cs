@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Linq;
 
 namespace API.Middlewares
 {
@@ -36,8 +35,8 @@ namespace API.Middlewares
             {
                 _logger.LogError(ex, "An error occurred");
 
-                string message = ex.Message;
-                string stackTrace = ex.StackTrace;
+                var message = ex.Message;
+                var stackTrace = ex.StackTrace;
                 int statusCode;
 
                 if (ex is BadHttpRequestException)
@@ -54,10 +53,10 @@ namespace API.Middlewares
 
                 var response = _env.IsDevelopment()
                     ? new AppException(statusCode, message, stackTrace)
-                    : new AppException(statusCode, statusCode == (int)HttpStatusCode.InternalServerError ? "Internal Server Error" : message);
+                    : new AppException(statusCode, "An error occurred");
 
                 var options = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
-                string json = JsonSerializer.Serialize(response, options);
+                var json = JsonSerializer.Serialize(response, options);
                 await context.Response.WriteAsync(json);
             }
         }

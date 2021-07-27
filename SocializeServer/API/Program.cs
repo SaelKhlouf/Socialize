@@ -9,6 +9,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Domain.Users;
+using Microsoft.AspNetCore.Identity;
 using Persistence.Seeds;
 
 namespace API
@@ -24,9 +26,11 @@ namespace API
 
             try
             {
-                ApplicationDbContext context = services.GetRequiredService<ApplicationDbContext>(); // Service locator pattern
+                var context = services.GetRequiredService<ApplicationDbContext>(); // Service locator pattern
                 await context.Database.MigrateAsync();
-                await Seed.SeedData(context);
+
+                var userManager = services.GetRequiredService<UserManager<AppUser>>();
+                await Seed.SeedData(context, userManager);
             }
             catch (Exception ex)
             {

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Domain.Activities;
+using Domain.Users;
 
 namespace Domain.Core
 {
@@ -9,6 +10,7 @@ namespace Domain.Core
         {
             CreateMap<ActivityRequest, Activity>();
             CreateMap<Activity, ActivityDto>().ReverseMap();
+            CreateMap<AppUser, LoginDto>();
             CreateMap<DataList<Activity>, DataList<ActivityDto>>().ReverseMap();
         }
     }

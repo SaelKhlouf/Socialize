@@ -1,4 +1,5 @@
-﻿using API.Filters;
+﻿using API.Authentication;
+using API.Filters;
 using Application.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;

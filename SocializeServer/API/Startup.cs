@@ -48,6 +48,7 @@ namespace API
                 });
 
             services.AddApplicationServices(_config);
+            services.AddIdentityServices(_config);
             services.Configure<ApiBehaviorOptions>(options =>
             {
                 options.SuppressModelStateInvalidFilter = true;
@@ -79,6 +80,7 @@ namespace API
 
             app.UseCors(_myAllowSpecificOrigins);
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

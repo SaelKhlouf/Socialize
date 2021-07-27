@@ -10,6 +10,7 @@ using API.Filters;
 using AutoMapper;
 using Domain.Activities;
 using Domain.Core;
+using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers
 {
@@ -44,6 +45,7 @@ namespace API.Controllers
 
         [HttpPost]
         [ProducesResponseType(typeof(ActivityDto), StatusCodes.Status201Created)]
+        [Authorize]
         public async Task<IActionResult> Post(ActivityRequest activity)
         {
             var response = await _activitiesService.PostAsync(activity);
@@ -52,6 +54,7 @@ namespace API.Controllers
 
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [Authorize]
         public async Task<IActionResult> DeleteActivityById(Guid id)
         {
             await _activitiesService.DeleteAsync(id);
