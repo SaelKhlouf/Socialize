@@ -8,6 +8,8 @@ using API.Authentication;
 using AutoMapper;
 using Domain.Users;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Persistence;
 
 namespace API.Controllers
 {
@@ -50,6 +52,34 @@ namespace API.Controllers
             var loginDto = _mapper.Map<LoginDto>(user);
             loginDto.Token = token;
             return Ok(loginDto);
+        }
+
+        [HttpPost]
+        [ProducesResponseType(typeof(UserDto), StatusCodes.Status201Created)]
+        [Route("register")]
+        public async Task<IActionResult> Register(UserRegisterRequest userRegisterRequest)
+        {
+            var userNameExists = await _userManager.Users.AnyAsync(p => p.UserName.Equals(userRegisterRequest.Username));
+            if (userNameExists)
+            {
+                throw new BadHttpRequestException("Username is already taken");
+            }
+
+            var emailExists = await _userManager.Users.AnyAsync(p => p.Email.Equals(userRegisterRequest.Email));
+            if (emailExists)
+            {
+                throw new BadHttpRequestException("Email is already taken");
+            }
+
+            await _userManager.CreateAsync(
+                new AppUser
+                {
+                    UserName = userRegisterRequest.Username,
+                    Email = userRegisterRequest.Email,
+                    DisplayName = userRegisterRequest.Displayname,
+                }, userRegisterRequest.Password);
+
+            return NoContent();
         }
     }
 }

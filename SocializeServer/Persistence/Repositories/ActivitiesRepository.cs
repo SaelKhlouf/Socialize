@@ -13,8 +13,6 @@ namespace Persistence.Repositories
     {
         public ActivitiesRepository(ApplicationDbContext dbContext) : base(dbContext)
         {
-            var hh = 2;
-            var c = hh + 1;
         }
 
         public async Task<Activity> GetByIdAsync(Guid id)
