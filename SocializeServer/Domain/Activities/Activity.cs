@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using Domain.Core;
+using Domain.Users;
 
 namespace Domain.Activities
 {
@@ -11,5 +13,7 @@ namespace Domain.Activities
         public string Category { get; set; }
         public string City { get; set; }
         public string Venue { get; set; }
+        public ICollection<AppUser> Users { get; set; }
+        public List<ActivityAttendee.ActivityAttendee> ActivityAttendees { get; set; }
     }
 }
