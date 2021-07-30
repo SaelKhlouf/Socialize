@@ -26,6 +26,7 @@ namespace API.Extensions
                 .AddSignInManager<SignInManager<AppUser>>();
 
             services.AddScoped<TokenService>();
+            services.AddSingleton<IUserAccessor, UserAccessor>();
 
             var jwtKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JwtKey"]));
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
