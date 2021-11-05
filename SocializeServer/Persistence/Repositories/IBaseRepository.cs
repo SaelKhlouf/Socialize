@@ -13,7 +13,6 @@ namespace Persistence.Repositories
         Task<T> PostAsync(T entity);
         Task<T> UpdateAsync(T entity);
         Task DeleteAsync(T entity);
-        Task<DataList<T>> GetAsync(int skip, int take, Expression<Func<T, bool>> where, params Expression<Func<T, object>>[] includes);
         Task SaveChangesAsync();
         Task BeginTransactionAsync();
         Task CommitTransactionAsync();

@@ -8,6 +8,7 @@ using Microsoft.OpenApi.Models;
 using Persistence;
 using Persistence.Repositories;
 using Domain.Core;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace API.Extensions
 {
@@ -19,7 +20,7 @@ namespace API.Extensions
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
             });
-            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(config.GetConnectionString("SocializeDb")));
+            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(config.GetConnectionString("SocializeDb")).ConfigureWarnings(p => p.Ignore(CoreEventId.RowLimitingOperationWithoutOrderByWarning)));
             services.AddScoped<ActivitiesRepository>();
             services.AddScoped<ActivitiesService>();
             services.AddAutoMapper(typeof(MappingProfiles).Assembly);

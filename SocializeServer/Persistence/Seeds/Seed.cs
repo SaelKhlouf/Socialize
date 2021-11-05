@@ -51,6 +51,7 @@ namespace Persistence.Seeds
                         Category = "drinks",
                         City = "London",
                         Venue = "Pub",
+                        CreatedAt = DateTime.Now
                     },
                     new Activity
                     {
@@ -60,6 +61,7 @@ namespace Persistence.Seeds
                         Category = "culture",
                         City = "Paris",
                         Venue = "Louvre",
+                        CreatedAt = DateTime.Now
                     },
                     new Activity
                     {
@@ -69,6 +71,7 @@ namespace Persistence.Seeds
                         Category = "culture",
                         City = "London",
                         Venue = "Natural History Museum",
+                        CreatedAt = DateTime.Now
                     },
                     new Activity
                     {
@@ -78,6 +81,7 @@ namespace Persistence.Seeds
                         Category = "music",
                         City = "London",
                         Venue = "O2 Arena",
+                        CreatedAt = DateTime.Now
                     },
                     new Activity
                     {
@@ -87,6 +91,7 @@ namespace Persistence.Seeds
                         Category = "drinks",
                         City = "London",
                         Venue = "Another pub",
+                        CreatedAt = DateTime.Now
                     },
                     new Activity
                     {
@@ -96,6 +101,7 @@ namespace Persistence.Seeds
                         Category = "drinks",
                         City = "London",
                         Venue = "Yet another pub",
+                        CreatedAt = DateTime.Now
                     },
                     new Activity
                     {
@@ -105,6 +111,7 @@ namespace Persistence.Seeds
                         Category = "drinks",
                         City = "London",
                         Venue = "Just another pub",
+                        CreatedAt = DateTime.Now
                     },
                     new Activity
                     {
@@ -114,6 +121,7 @@ namespace Persistence.Seeds
                         Category = "music",
                         City = "London",
                         Venue = "Roundhouse Camden",
+                        CreatedAt = DateTime.Now
                     },
                     new Activity
                     {
@@ -123,6 +131,7 @@ namespace Persistence.Seeds
                         Category = "travel",
                         City = "London",
                         Venue = "Somewhere on the Thames",
+                        CreatedAt = DateTime.Now
                     },
                     new Activity
                     {
@@ -132,6 +141,7 @@ namespace Persistence.Seeds
                         Category = "film",
                         City = "London",
                         Venue = "Cinema",
+                        CreatedAt = DateTime.Now
                     }
                 };
 

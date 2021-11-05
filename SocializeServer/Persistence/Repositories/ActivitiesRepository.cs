@@ -15,6 +15,27 @@ namespace Persistence.Repositories
         {
         }
 
+        public async Task<DataList<Activity>> GetAsync(int skip, int take)
+        {
+            var query = _context.Set<Activity>().AsQueryable();
+
+            var count = await query
+                .AsNoTracking()
+                .CountAsync();
+
+            var data = await query.AsNoTracking()
+                .Skip(skip)
+                .Take(take)
+                .OrderBy(p => p.Title)
+                .ToListAsync();
+
+            return new DataList<Activity>
+            {
+                Count = count,
+                Data = data
+            };
+        }
+
         public async Task<Activity> GetByIdAsync(Guid id)
         {
             return await _context

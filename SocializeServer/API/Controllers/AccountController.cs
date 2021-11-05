@@ -55,7 +55,7 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(UserDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(UserDto), StatusCodes.Status204NoContent)]
         [Route("register")]
         public async Task<IActionResult> Register(UserRegisterRequest userRegisterRequest)
         {

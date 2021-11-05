@@ -15,7 +15,5 @@ namespace Domain.ActivityAttendee
 
         public Guid ActivityId { get; set; }
         public Activity Activity { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
     }
 }

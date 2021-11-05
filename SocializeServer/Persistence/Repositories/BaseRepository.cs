@@ -19,6 +19,7 @@ namespace Persistence.Repositories
 
         public async Task<T> PostAsync(T entity)
         {
+            entity.CreatedAt = DateTime.Now;
             await _context.Set<T>().AddAsync(entity);
             await _context.SaveChangesAsync();
             return entity;
@@ -30,41 +31,9 @@ namespace Persistence.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<DataList<T>> GetAsync(int skip = 0, int take = int.MaxValue, Expression<Func<T, bool>> where = null, Expression<Func<T, object>>[] includes = null)
-        {
-            var query = _context.Set<T>().AsQueryable();
-
-            if (where != null)
-            {
-                query = query.Where(where);
-            }
-            if (includes != null)
-            {
-                foreach (Expression<Func<T, object>> i in includes)
-                {
-                    query = query.Include(i);
-                }
-            }
-
-            var count = await query
-                .AsNoTracking()
-                .CountAsync();
-
-            var data = await query.AsNoTracking()
-                .Skip(skip)
-                .Take(take)
-                .OrderBy(T => T.Id)
-                .ToListAsync();
-
-            return new DataList<T>
-            {
-                Count = count,
-                Data = data
-            };
-        }
-
         public async Task<T> UpdateAsync(T entity)
         {
+            entity.UpdatedAt = DateTime.Now;
             _context.Update(entity);
             await _context.SaveChangesAsync();
             return entity;
