@@ -1,6 +1,5 @@
 import {Activity} from "../../../app/models/activity";
 import {ActivitiesList} from "./ActivitiesList";
-import React from "react";
 import {Grid, GridColumn} from "semantic-ui-react";
 import ActivityDetails from "./ActivityDetails";
 import ActivityForm from "./ActivityForm";
@@ -14,6 +13,7 @@ interface Props {
     handleSelectActivity: (id: string) => void;
     handleDeleteActivity: (id: string) => void;
     handleCancelActivity: () => void;
+    submitting: boolean;
     handleFormSubmit: (activity: Activity) => void;
 }
 
@@ -26,24 +26,25 @@ export default function Dashboard({
                                       handleOpenEditActivityForm,
                                       handleCancelEditActivityForm,
                                       handleFormSubmit,
+                                      submitting,
                                       handleDeleteActivity
                                   }: Props) {
 
     return (
         <Grid>
             <GridColumn width={10}>
-                <ActivitiesList activities={activities} handleSelectActivity={handleSelectActivity}
+                <ActivitiesList activities={activities} handleSelectActivity={handleSelectActivity} submitting={submitting}
                                 handleDeleteActivity={handleDeleteActivity}/>
             </GridColumn>
             <GridColumn width={6}>
                 {
                     activityEditMode &&
-                    <ActivityForm handleCancelEditActivityForm={handleCancelEditActivityForm}
+                    <ActivityForm handleCancelEditActivityForm={handleCancelEditActivityForm} submitting={submitting}
                                                selectedActivity={selectedActivity} handleFormSubmit={handleFormSubmit}/>
                 }
                 {
                     (selectedActivity && !activityEditMode) &&
-                    <ActivityDetails activity={selectedActivity} handleCancelActivity={handleCancelActivity}
+                    <ActivityDetails activity={selectedActivity} handleCancelActivity={handleCancelActivity} submitting={submitting}
                                      handleOpenEditActivityForm={handleOpenEditActivityForm}/>
                 }
             </GridColumn>

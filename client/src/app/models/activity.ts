@@ -8,6 +8,7 @@ export interface Activity {
     venue: string;
 }
 
-export interface Activities {
-    data: Activity[];
+export interface DataList<T> {
+    data: T[];
+    count: number;
 }

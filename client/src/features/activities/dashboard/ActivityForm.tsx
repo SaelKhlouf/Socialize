@@ -1,17 +1,19 @@
 import React, {useState} from "react";
-import {Button, Form, Segment, TextArea} from "semantic-ui-react";
+import {Button, Form, Segment} from "semantic-ui-react";
 import {Activity} from "../../../app/models/activity";
 
 interface Props {
     handleCancelEditActivityForm: () => void;
     selectedActivity: Activity | undefined;
     handleFormSubmit: (activity: Activity) => void;
+    submitting: boolean;
 }
 
 export default function ActivityForm({
                                                       selectedActivity,
                                                       handleCancelEditActivityForm,
-                                                      handleFormSubmit
+                                                      handleFormSubmit,
+                                                      submitting
                                                   }: Props) {
     const initialActivity = selectedActivity ?? {
         id: '',
@@ -34,33 +36,30 @@ export default function ActivityForm({
 
     return (
         <Segment clearing>
-            <Form>
-                <Form.Field>
-                    <input placeholder='Title' name='title' value={activity.title}
-                           onChange={handleInputChange}/>
-                </Form.Field>
-                <Form.Field>
-                    <TextArea placeholder='Description' name='description' value={activity.description}
-                              onChange={handleInputChange}/>
-                </Form.Field>
-                <Form.Field>
-                    <input placeholder='Category' name='category' value={activity.category}
-                           onChange={handleInputChange}/>
-                </Form.Field>
-                <Form.Field>
-                    <input placeholder='Date' name='date' value={activity.date}
-                           onChange={handleInputChange}/>
-                </Form.Field>
-                <Form.Field>
-                    <input placeholder='City' name='city' value={activity.city}
-                           onChange={handleInputChange}/>
-                </Form.Field>
-                <Form.Field>
-                    <input placeholder='Venue' name='venue' value={activity.venue}
-                           onChange={handleInputChange}/>
-                </Form.Field>
+            <Form onSubmit={() => handleFormSubmit(activity)} autoComplete="off">
+            
+                <Form.Input placeholder='Title' name='title' value={activity.title}
+                        onChange={handleInputChange}/>
+        
+        
+                <Form.Input placeholder='Description' name='description' value={activity.description}
+                            onChange={handleInputChange}/>
+            
+        
+                <Form.Input placeholder='Category' name='category' value={activity.category} type="textarea"
+                        onChange={handleInputChange}/>
+        
+                <Form.Input placeholder='Date' name='date' value={activity.date} type = "date"
+                        onChange={handleInputChange}/>
+        
+                <Form.Input placeholder='City' name='city' value={activity.city}
+                        onChange={handleInputChange}/>
+        
+                <Form.Input placeholder='Venue' name='venue' value={activity.venue}
+                        onChange={handleInputChange}/>
+        
 
-                <Button primary floated="right" type='submit' onClick={() => handleFormSubmit(activity)}>Submit</Button>
+                <Button primary floated="right" type='submit' loading={submitting}>Submit</Button>
                 <Button secondary floated="left" type='button' onClick={handleCancelEditActivityForm}>Cancel</Button>
             </Form>
         </Segment>
