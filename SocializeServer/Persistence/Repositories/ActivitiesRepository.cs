@@ -26,7 +26,7 @@ namespace Persistence.Repositories
             var data = await query.AsNoTracking()
                 .Skip(skip)
                 .Take(take)
-                .OrderBy(p => p.Title)
+                .OrderByDescending(p => p.CreatedAt)
                 .ToListAsync();
 
             return new DataList<Activity>
