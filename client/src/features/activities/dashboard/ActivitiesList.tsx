@@ -1,28 +1,29 @@
-import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {Button, Item, Label, Segment} from "semantic-ui-react";
-import {Activity} from "../../../app/models/activity";
+import { deleteActivity, selectActivityAction } from "../activitiesReducer";
+import { AppDispatch } from "../../../app/redux/store";
+import { RootState } from "../../../app/redux/rootReducer";
 
-interface Props {
-    activities: Activity[];
-    handleSelectActivity: (id: string) => void;
-    handleDeleteActivity: (id: string) => void;
-    submitting: boolean;
-}
+export function ActivitiesList() {
+    const dispatch = useDispatch<AppDispatch>();
 
-export function ActivitiesList(props: Props) {
-
-    const [target, setTarget] = useState(null);
+    const target = useSelector((state: RootState) => state.activities.target);
+    const activities = useSelector((state: RootState) => state.activities.activities);
 
     const handleDeleteButtonClick = (event: any, id: string) => {
-        setTarget(event.target.getAttribute('name'));
-        props.handleDeleteActivity(id);
+        const target = event.target.getAttribute('name');
+        dispatch(deleteActivity({id, target}));
     };
+
+    const handleSelectActivity = (id: string) => {
+        dispatch(selectActivityAction(activities.find(a => a.id === id)));
+    }
 
     return (
         <Segment>
             <Item.Group divided>
                 {
-                    props.activities.map((activity) => (
+                    activities.map((activity) => (
                         <Item key={activity.id}>
                             <Item.Image src={`/assets/categoryImages/${activity.category}.jpg`}/>
                             <Item.Content>
@@ -32,7 +33,7 @@ export function ActivitiesList(props: Props) {
                                     {activity.description}
                                 </Item.Description>
                                 <Item.Extra>
-                                    <Button primary floated="right" onClick={() => props.handleSelectActivity(activity.id)}> View </Button>
+                                    <Button primary floated="right" onClick={() => handleSelectActivity(activity.id)}> View </Button>
                                     <Button name = {activity.id} floated="right" color='red' loading={target === activity.id} onClick={(e) => handleDeleteButtonClick(e, activity.id)}> Delete </Button>
                                     <Label as='a'>{activity.category}</Label>
                                 </Item.Extra>

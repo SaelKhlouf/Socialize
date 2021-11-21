@@ -1,11 +1,17 @@
 import {Button, Container, Image, Menu} from "semantic-ui-react";
-import React, {Fragment} from 'react';
+import {Fragment} from 'react';
+import { clearSelectedActivityAction } from "../../features/activities/activitiesReducer";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../redux/store";
 
-interface Props {
-    handleOpenEditActivityForm: () => void;
-}
+export default function NavBar() {
 
-export default function NavBar({handleOpenEditActivityForm}: Props) {
+    const dispatch = useDispatch<AppDispatch>();
+
+    const handleOpenEditActivityForm = () => {
+        dispatch(clearSelectedActivityAction());
+    }
+
     return (
         <Fragment>
             <Menu inverted fixed='top'>

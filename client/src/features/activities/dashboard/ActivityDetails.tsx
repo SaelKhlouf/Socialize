@@ -1,24 +1,33 @@
-import {Activity} from "../../../app/models/activity";
 import {Button, Card, Image} from "semantic-ui-react";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch } from "../../../app/redux/store";
+import { selectActivityAction, setActivityEditModeAction } from "../activitiesReducer";
+import { RootState } from "../../../app/redux/rootReducer";
 
-interface Props {
-    activity: Activity;
-    handleCancelActivity: () => void;
-    handleOpenEditActivityForm: () => void;
-    submitting: boolean;
-}
+export default function ActivityDetails() {
+    const dispatch = useDispatch<AppDispatch>();
 
-export default function ActivityDetails({activity, handleCancelActivity, handleOpenEditActivityForm, submitting}: Props) {
+    const selectedActivity = useSelector((state: RootState) => state.activities.selectedActivity);
+    const submitting = useSelector((state: RootState) => state.activities.submitting);
+
+    const handleCancelActivity = () => {
+        dispatch(selectActivityAction(undefined));
+    }
+
+    const handleOpenEditActivityForm = () => {
+        dispatch(setActivityEditModeAction(true));
+    }
+
     return (
         <Card fluid>
-            <Image src={`/assets/categoryImages/${activity.category}.jpg`}/>
+            <Image src={`/assets/categoryImages/${selectedActivity?.category}.jpg`}/>
             <Card.Content>
-                <Card.Header>{activity.title}</Card.Header>
+                <Card.Header>{selectedActivity?.title}</Card.Header>
                 <Card.Meta>
-                    <span className='date'>{activity.city}</span>
+                    <span className='date'>{selectedActivity?.city}</span>
                 </Card.Meta>
                 <Card.Description>
-                    {activity.description}
+                    {selectedActivity?.description}
                 </Card.Description>
             </Card.Content>
             <Card.Content extra>

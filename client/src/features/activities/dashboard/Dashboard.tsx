@@ -1,51 +1,27 @@
-import {Activity} from "../../../app/models/activity";
 import {ActivitiesList} from "./ActivitiesList";
 import {Grid, GridColumn} from "semantic-ui-react";
 import ActivityDetails from "./ActivityDetails";
 import ActivityForm from "./ActivityForm";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../app/redux/rootReducer";
 
-interface Props {
-    activities: Activity[];
-    selectedActivity: Activity | undefined;
-    handleOpenEditActivityForm: () => void;
-    handleCancelEditActivityForm: () => void;
-    activityEditMode: boolean;
-    handleSelectActivity: (id: string) => void;
-    handleDeleteActivity: (id: string) => void;
-    handleCancelActivity: () => void;
-    submitting: boolean;
-    handleFormSubmit: (activity: Activity) => void;
-}
-
-export default function Dashboard({
-                                      activities,
-                                      selectedActivity,
-                                      activityEditMode,
-                                      handleSelectActivity,
-                                      handleCancelActivity,
-                                      handleOpenEditActivityForm,
-                                      handleCancelEditActivityForm,
-                                      handleFormSubmit,
-                                      submitting,
-                                      handleDeleteActivity
-                                  }: Props) {
+export default function Dashboard() {
+    const selectedActivity = useSelector((state: RootState) => state.activities.selectedActivity);
+    const activityEditMode = useSelector((state: RootState) => state.activities.activityEditMode);
 
     return (
         <Grid>
             <GridColumn width={10}>
-                <ActivitiesList activities={activities} handleSelectActivity={handleSelectActivity} submitting={submitting}
-                                handleDeleteActivity={handleDeleteActivity}/>
+                <ActivitiesList />
             </GridColumn>
             <GridColumn width={6}>
                 {
                     activityEditMode &&
-                    <ActivityForm handleCancelEditActivityForm={handleCancelEditActivityForm} submitting={submitting}
-                                               selectedActivity={selectedActivity} handleFormSubmit={handleFormSubmit}/>
+                    <ActivityForm />
                 }
                 {
                     (selectedActivity && !activityEditMode) &&
-                    <ActivityDetails activity={selectedActivity} handleCancelActivity={handleCancelActivity} submitting={submitting}
-                                     handleOpenEditActivityForm={handleOpenEditActivityForm}/>
+                    <ActivityDetails />
                 }
             </GridColumn>
         </Grid>
