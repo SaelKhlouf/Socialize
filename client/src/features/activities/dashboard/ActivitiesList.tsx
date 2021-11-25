@@ -1,8 +1,9 @@
 import { useDispatch, useSelector } from "react-redux";
 import {Button, Item, Label, Segment} from "semantic-ui-react";
-import { deleteActivity, selectActivityAction } from "../activitiesReducer";
+import { deleteActivity, getActivity, selectActivityAction } from "../activitiesReducer";
 import { AppDispatch } from "../../../app/redux/store";
 import { RootState } from "../../../app/redux/rootReducer";
+import { NavLink } from "react-router-dom";
 
 export function ActivitiesList() {
     const dispatch = useDispatch<AppDispatch>();
@@ -16,7 +17,14 @@ export function ActivitiesList() {
     };
 
     const handleSelectActivity = (id: string) => {
-        dispatch(selectActivityAction(activities.find(a => a.id === id)));
+        const activityInMemory = activities.find(a => a.id === id);
+        if(activityInMemory){
+            console.log('get activity from memory ' + activityInMemory.id);
+            dispatch(selectActivityAction(activityInMemory));
+        }else{
+            console.log('get activity from api ' + id);
+            dispatch(getActivity(id));
+        }
     }
 
     return (
@@ -33,7 +41,7 @@ export function ActivitiesList() {
                                     {activity.description}
                                 </Item.Description>
                                 <Item.Extra>
-                                    <Button primary floated="right" onClick={() => handleSelectActivity(activity.id)}> View </Button>
+                                    <Button primary floated="right" onClick={() => handleSelectActivity(activity.id)} as={NavLink} to={`${activity.id}`}> View </Button>
                                     <Button name = {activity.id} floated="right" color='red' loading={target === activity.id} onClick={(e) => handleDeleteButtonClick(e, activity.id)}> Delete </Button>
                                     <Label as='a'>{activity.category}</Label>
                                 </Item.Extra>
@@ -44,4 +52,8 @@ export function ActivitiesList() {
             </Item.Group>
         </Segment>
     );
+}
+
+function setLoadingAction(arg0: boolean): any {
+    throw new Error("Function not implemented.");
 }

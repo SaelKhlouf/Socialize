@@ -14,7 +14,7 @@ export type ActivitiesState = {
 
 const initialState : ActivitiesState = {
     activities: [],
-    loading: true,
+    loading: false,
     selectedActivity: undefined,
     activityEditMode: false,
     submitting: false,
@@ -34,6 +34,12 @@ export const getActivities = createAsyncThunk(
   'activities/getActivities',
   async () => {
     return await ActivitiesApis.list();
+});
+
+export const getActivity = createAsyncThunk(
+  'activities/getActivity',
+  async (id: string) => {
+    return await ActivitiesApis.details(id);
 });
 
 export const deleteActivity = createAsyncThunk(
@@ -60,6 +66,10 @@ const activitiesSlice = createSlice({
   initialState,
   // add your non-async reducers here
   reducers: {
+    setLoadingAction: (state, action: PayloadAction<boolean>) => {
+      state.loading = action.payload;
+      return state;
+    },
     selectActivityAction: (state, action: PayloadAction<Activity | undefined>) => {
         state.selectedActivity = action.payload;
         return state;
@@ -94,8 +104,26 @@ const activitiesSlice = createSlice({
   // add your async reducers in extraReducers
   extraReducers: (builder) => {
     builder
+      .addCase(getActivities.pending, (state, action) => {
+        state.loading = true;
+        return state;
+      })
       .addCase(getActivities.fulfilled, (state, action) => {
         state.activities = action.payload.data;
+        state.loading = false;
+        return state;
+      });
+
+
+    builder
+      .addCase(getActivity.pending, (state, action) => {
+        state.loading = true;
+        return state;
+      });
+      builder
+      .addCase(getActivity.fulfilled, (state, action) => {
+        state.selectedActivity = action.payload;
+        state.activity = state.selectedActivity;
         state.loading = false;
         return state;
       });

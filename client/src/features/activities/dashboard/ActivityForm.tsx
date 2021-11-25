@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {Button, Form, Segment} from "semantic-ui-react";
 import {Activity} from "../../../app/models/activity";
-import { createActivity, setActivityAction, setActivityEditModeAction, updateActivity } from "../activitiesReducer";
+import { createActivity, getActivity, setActivityAction, setActivityEditModeAction, updateActivity } from "../activitiesReducer";
 import { AppDispatch } from "../../../app/redux/store";
 import { RootState } from "../../../app/redux/rootReducer";
+import { NavLink, useParams } from "react-router-dom";
+import LoadingComponent from "../../../app/layout/LoadingComponent";
 
 
 export default function ActivityForm() {
@@ -43,6 +45,23 @@ export default function ActivityForm() {
         dispatch(setActivityEditModeAction(false));
     }
 
+    let params = useParams();
+
+    const selectedActivity = useSelector((state: RootState) => state.activities.selectedActivity);
+    const loading = useSelector((state: RootState) => state.activities.loading);
+
+    useEffect(() => {
+        if(!selectedActivity && params.id)
+        {
+            console.log('get activity from api ' + params.id);
+            dispatch(getActivity(params.id!));
+        }
+    }, [dispatch, selectedActivity, params.id]);
+
+    if(loading){
+        return <LoadingComponent content={"Loading"} inverted={true} active={true}></LoadingComponent>;
+    }
+    
     return (
         <Segment clearing>
             <Form onSubmit={() => handleFormSubmit(activity)} autoComplete="off">
@@ -68,7 +87,9 @@ export default function ActivityForm() {
         
 
                 <Button primary floated="right" type='submit' loading={submitting}>Submit</Button>
-                <Button secondary floated="left" type='button' onClick={handleCancelEditActivityForm}>Cancel</Button>
+                <Button secondary floated="left" type='button' onClick={handleCancelEditActivityForm} as={NavLink} to={`/activities/${activity.id}`}>
+                    Cancel
+                </Button>
             </Form>
         </Segment>
     );

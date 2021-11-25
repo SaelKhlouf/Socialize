@@ -1,28 +1,28 @@
 import {ActivitiesList} from "./ActivitiesList";
 import {Grid, GridColumn} from "semantic-ui-react";
-import ActivityDetails from "./ActivityDetails";
-import ActivityForm from "./ActivityForm";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../app/redux/rootReducer";
+import { AppDispatch } from "../../../app/redux/store";
+import { useEffect } from "react";
+import { getActivities } from "../activitiesReducer";
+import LoadingComponent from "../../../app/layout/LoadingComponent";
 
 export default function Dashboard() {
-    const selectedActivity = useSelector((state: RootState) => state.activities.selectedActivity);
-    const activityEditMode = useSelector((state: RootState) => state.activities.activityEditMode);
+const dispatch = useDispatch<AppDispatch>();
+
+    useEffect(() => {
+        dispatch(getActivities());
+    }, [dispatch]);
+
+    const loading = useSelector((state: RootState) => state.activities.loading);
+    if(loading){
+        return <LoadingComponent content={"Loading"} inverted={true} active={true}></LoadingComponent>;
+    }
 
     return (
         <Grid>
-            <GridColumn width={10}>
+            <GridColumn width={16}>
                 <ActivitiesList />
-            </GridColumn>
-            <GridColumn width={6}>
-                {
-                    activityEditMode &&
-                    <ActivityForm />
-                }
-                {
-                    (selectedActivity && !activityEditMode) &&
-                    <ActivityDetails />
-                }
             </GridColumn>
         </Grid>
     );
