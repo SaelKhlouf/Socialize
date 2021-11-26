@@ -9,7 +9,7 @@ export function ActivitiesList() {
     const dispatch = useDispatch<AppDispatch>();
 
     const target = useSelector((state: RootState) => state.activities.target);
-    const activities = useSelector((state: RootState) => state.activities.activities);
+    const activitiesRegistry = useSelector((state: RootState) => state.activities.activitiesRegistry);
 
     const handleDeleteButtonClick = (event: any, id: string) => {
         const target = event.target.getAttribute('name');
@@ -17,12 +17,10 @@ export function ActivitiesList() {
     };
 
     const handleSelectActivity = (id: string) => {
-        const activityInMemory = activities.find(a => a.id === id);
+        const activityInMemory = activitiesRegistry.get(id);
         if(activityInMemory){
-            console.log('get activity from memory ' + activityInMemory.id);
             dispatch(selectActivityAction(activityInMemory));
         }else{
-            console.log('get activity from api ' + id);
             dispatch(getActivity(id));
         }
     }
@@ -31,8 +29,8 @@ export function ActivitiesList() {
         <Segment>
             <Item.Group divided>
                 {
-                    activities.map((activity) => (
-                        <Item key={activity.id}>
+                    Array.from(activitiesRegistry.values()).map((activity) => {
+                        return <Item key={activity.id}>
                             <Item.Image src={`/assets/categoryImages/${activity.category}.jpg`}/>
                             <Item.Content>
                                 <Item.Header as='h2'>{activity.title}</Item.Header>
@@ -47,7 +45,7 @@ export function ActivitiesList() {
                                 </Item.Extra>
                             </Item.Content>
                         </Item>
-                    ))
+                    })
                 }
             </Item.Group>
         </Segment>

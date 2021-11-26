@@ -3,7 +3,7 @@ import { ActivitiesApis } from '../../app/api/agent'
 import { Activity } from '../../app/models/activity'
 
 export type ActivitiesState = {
-    activities: Activity[];
+    activitiesRegistry: Map<string, Activity>
     selectedActivity: Activity | undefined;
     loading: boolean;
     activityEditMode: boolean;
@@ -13,7 +13,7 @@ export type ActivitiesState = {
 }
 
 const initialState : ActivitiesState = {
-    activities: [],
+    activitiesRegistry: new Map(),
     loading: false,
     selectedActivity: undefined,
     activityEditMode: false,
@@ -109,7 +109,8 @@ const activitiesSlice = createSlice({
         return state;
       })
       .addCase(getActivities.fulfilled, (state, action) => {
-        state.activities = action.payload.data;
+        const activitiesMapReducer = (map: Map<string, Activity>, activity: Activity) => map.set(activity.id, activity);
+        state.activitiesRegistry = action.payload.data.reduce(activitiesMapReducer, new Map());
         state.loading = false;
         return state;
       });
@@ -139,13 +140,12 @@ const activitiesSlice = createSlice({
       .addCase(deleteActivity.fulfilled, (state, action) => {
         const {id, target} = action.payload;
         state.target = target;
-
-          state.activities = [...state.activities.filter(a => a.id !== id)];
-          if (id === state.selectedActivity?.id) {
-              state.selectedActivity = undefined;
-              state.activityEditMode = false;
-          }
-          return state;
+        state.activitiesRegistry.delete(id);
+        if (id === state.selectedActivity?.id) {
+            state.selectedActivity = undefined;
+            state.activityEditMode = false;
+        }
+        return state;
       });
 
 
@@ -156,9 +156,8 @@ const activitiesSlice = createSlice({
       })
       .addCase(createActivity.fulfilled, (state, action) => {
           const createdActivity = action.payload;
-          state.activities = [...state.activities, createdActivity];
+          state.activitiesRegistry.set(createdActivity.id, createdActivity);
           state.selectedActivity = createdActivity;
-          console.log('set state.activity ' + createdActivity.id);
           state.activity = createdActivity;
 
           state.submitting = false;
@@ -176,7 +175,7 @@ const activitiesSlice = createSlice({
       })
       .addCase(updateActivity.fulfilled, (state, action) => {
           const updatedActivity = action.payload;
-          state.activities = [...state.activities.filter(a => a.id !== updatedActivity.id), updatedActivity];
+          state.activitiesRegistry.set(updatedActivity.id, updatedActivity);
           if(state.selectedActivity?.id === updatedActivity.id){
             state.selectedActivity = updatedActivity;
           }

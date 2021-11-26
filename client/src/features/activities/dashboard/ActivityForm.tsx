@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {Button, Form, Segment} from "semantic-ui-react";
-import {Activity} from "../../../app/models/activity";
 import { createActivity, getActivity, setActivityAction, setActivityEditModeAction, updateActivity } from "../activitiesReducer";
 import { AppDispatch } from "../../../app/redux/store";
 import { RootState } from "../../../app/redux/rootReducer";
@@ -12,39 +11,27 @@ import LoadingComponent from "../../../app/layout/LoadingComponent";
 export default function ActivityForm() {
     const dispatch = useDispatch<AppDispatch>();
 
-    const activity = useSelector((state: RootState) => state.activities.activity);
+    let activity = useSelector((state: RootState) => state.activities.activity);
     const submitting = useSelector((state: RootState) => state.activities.submitting);
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const {name, value} = event.target;
-        const data = activity ?? {
-            id: '',
-            title: '',
-            description: '',
-            category: '',
-            date: '',
-            city: '',
-            venue: '',
-        };
-        
         dispatch(setActivityAction({
-            ...data,
+            ...activity,
             [name]: value
         }));
     };
 
     let navigate = useNavigate();
 
-    const handleFormSubmit = () => {
-        console.log('activity : ' + JSON.stringify(activity));
-        if(activity?.id){
-            dispatch(updateActivity(activity));
+    const handleFormSubmit = async () => {
+        if(activity.id){
+            await dispatch(updateActivity(activity));
+            navigate(`/activities/${activity.id}`);
         }else{
-           dispatch(createActivity(activity));
+           const data = await dispatch(createActivity(activity)).unwrap();
+           navigate(`/activities/${data.id}`);
         }
-
-        console.log('activity.id + ' + activity.id);
-        navigate(`/activities/${activity.id}`);
     }
 
     const handleCancelEditActivityForm = () => {
@@ -59,7 +46,6 @@ export default function ActivityForm() {
     useEffect(() => {
         if(!selectedActivity && params.id)
         {
-            console.log('get activity from api ' + params.id);
             dispatch(getActivity(params.id!));
         }
     }, [dispatch, selectedActivity, params.id]);

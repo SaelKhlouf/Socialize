@@ -11,8 +11,7 @@ export default function ActivityDetails() {
     const dispatch = useDispatch<AppDispatch>();
 
     const selectedActivity = useSelector((state: RootState) => state.activities.selectedActivity);
-    const activities = useSelector((state: RootState) => state.activities.activities);
-    const submitting = useSelector((state: RootState) => state.activities.submitting);
+    const activitiesRegistry = useSelector((state: RootState) => state.activities.activitiesRegistry);
     const loading = useSelector((state: RootState) => state.activities.loading);
 
     const handleCancelActivity = () => {
@@ -26,13 +25,14 @@ export default function ActivityDetails() {
     let params = useParams();
 
     useEffect(() => {
-        const activityInMemory = activities.find(a => a.id === params.id);
-        if(!activityInMemory && params.id)
-        {
-            console.log('get activity from api ' + params.id);
-            dispatch(getActivity(params.id!));
+        if(params.id){
+            const activityInMemory = activitiesRegistry.get(params.id);
+            if(!activityInMemory)
+            {
+                dispatch(getActivity(params.id!));
+            }
         }
-    }, [dispatch, activities, params.id]);
+    }, [dispatch, activitiesRegistry, params.id]);
 
     if(loading){
         return <LoadingComponent content={"Loading"} inverted={true} active={true}></LoadingComponent>;
