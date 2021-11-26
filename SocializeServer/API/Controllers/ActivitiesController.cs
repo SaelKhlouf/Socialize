@@ -53,6 +53,16 @@ namespace API.Controllers
             return CreatedAtAction(nameof(GetActivityById), new { id = response.Id }, _mapper.Map<ActivityDto>(response));
         }
 
+
+        [HttpPut("{id}")]
+        [ProducesResponseType(typeof(ActivityDto), StatusCodes.Status200OK)]
+        [Authorize]
+        public async Task<IActionResult> Update(Guid id, [FromBody] ActivityRequest activity)
+        {
+            var response = await _activitiesService.UpdateAsync(id, activity);
+            return Ok(_mapper.Map<ActivityDto>(response));
+        }
+
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [Authorize]
