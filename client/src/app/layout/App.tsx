@@ -5,17 +5,25 @@ import Dashboard from "../../features/activities/dashboard/Dashboard";
 import { Route, Routes } from "react-router-dom";
 import ActivityForm from "../../features/activities/dashboard/ActivityForm";
 import ActivityDetails from "../../features/activities/dashboard/ActivityDetails";
+import HomePageComponent from "./HomePageComponent";
 
 function App() {
     return (
         <Fragment>
-            <NavBar/>
-            <Container style={{marginTop: '8em'}}>
+            <Container style={{marginTop: '6em'}}>
                 <Routes>
-                    <Route path="activities" element={ <Dashboard />} />
-                    <Route path="activities/create" element={<ActivityForm />} />
-                    <Route path="activities/:id" element={<ActivityDetails />} />
-                    <Route path="activities/:id/edit" element={<ActivityForm />} />
+                    <Route path="" element={ <HomePageComponent />} />
+                    <Route path="activities/*" element={
+                        <Fragment>   
+                            <NavBar/>
+                            <Routes>
+                                <Route path="" element={ <Dashboard />} />
+                                <Route path="create" element={<ActivityForm />} />
+                                <Route path=":id" element={<ActivityDetails />} />
+                                <Route path=":id/edit" element={<ActivityForm />} />
+                            </Routes>
+                        </Fragment>
+                    } />
                 </Routes>
             </Container>
         </Fragment>

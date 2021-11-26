@@ -25,9 +25,9 @@ export default function NavBar() {
                         <Image src='/assets/logo.png' size='mini' style={{marginRight: '1.5em'}}/>
                         The social app
                     </Menu.Item>
-                    <Menu.Item as={NavLink} to="activities/" style={({ isActive } : {isActive: boolean}) => isActive ? activeStyle : undefined}>Activities</Menu.Item>
+                    <Menu.Item as={NavLink} to="/activities/" style={({ isActive } : {isActive: boolean}) => isActive ? activeStyle : undefined}>Activities</Menu.Item>
                     <Menu.Item>
-                        <Button as={NavLink} to="activities/create/" style={({ isActive } : {isActive: boolean}) => isActive ? activeStyle : undefined} primary onClick={handleOpenEditActivityForm}>Create Activity</Button>
+                        <Button as={NavLink} to="create" style={({ isActive } : {isActive: boolean}) => isActive ? activeStyle : undefined} primary onClick={handleOpenEditActivityForm}>Create Activity</Button>
                     </Menu.Item>
                 </Container>
             </Menu>
