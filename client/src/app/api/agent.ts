@@ -21,7 +21,7 @@ export const ActivitiesApis = {
     list: () => requests.get<DataList<Activity>>("/Activities"),
     details: (id: string) => requests.get<Activity>(`/Activities/${id}`),
     create: (body: {}) => requests.post<Activity>("/Activities", body),
-    update: (body: {}) => requests.put<Activity>("/Activities", body),
+    update: (id: string, body: {}) => requests.put<Activity>(`/Activities/${id}`, body),
     delete: (id: string) => requests.delete<void>(`/Activities/${id}`),
 }
 

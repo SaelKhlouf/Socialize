@@ -5,7 +5,7 @@ import {Activity} from "../../../app/models/activity";
 import { createActivity, getActivity, setActivityAction, setActivityEditModeAction, updateActivity } from "../activitiesReducer";
 import { AppDispatch } from "../../../app/redux/store";
 import { RootState } from "../../../app/redux/rootReducer";
-import { NavLink, useParams } from "react-router-dom";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
 import LoadingComponent from "../../../app/layout/LoadingComponent";
 
 
@@ -33,12 +33,18 @@ export default function ActivityForm() {
         }));
     };
 
-    const handleFormSubmit = async (activity: Activity) => {
-        if(activity?.id != null){
-            dispatch(createActivity(activity));
-        }else{
+    let navigate = useNavigate();
+
+    const handleFormSubmit = () => {
+        console.log('activity : ' + JSON.stringify(activity));
+        if(activity?.id){
             dispatch(updateActivity(activity));
+        }else{
+           dispatch(createActivity(activity));
         }
+
+        console.log('activity.id + ' + activity.id);
+        navigate(`/activities/${activity.id}`);
     }
 
     const handleCancelEditActivityForm = () => {
@@ -64,7 +70,7 @@ export default function ActivityForm() {
     
     return (
         <Segment clearing>
-            <Form onSubmit={() => handleFormSubmit(activity)} autoComplete="off">
+            <Form onSubmit={handleFormSubmit} autoComplete="off">
             
                 <Form.Input placeholder='Title' name='title' value={activity.title}
                         onChange={handleInputChange}/>

@@ -52,7 +52,7 @@ export default function ActivityDetails() {
             </Card.Content>
             <Card.Content extra>
                 <Button.Group widths={2}>
-                    <Button basic color='green' loading={submitting} onClick={handleOpenEditActivityForm} as={NavLink} to={`/activities/${selectedActivity?.id}/edit`}>
+                    <Button basic color='green' onClick={handleOpenEditActivityForm} as={NavLink} to={`/activities/${selectedActivity?.id}/edit`}>
                         Edit
                     </Button>
                     <Button basic color='red' onClick={handleCancelActivity} as={NavLink} to="/activities/">
@@ -62,8 +62,4 @@ export default function ActivityDetails() {
             </Card.Content>
         </Card>
     );
-}
-
-function setLoadingAction(arg0: boolean): any {
-    throw new Error("Function not implemented.");
 }

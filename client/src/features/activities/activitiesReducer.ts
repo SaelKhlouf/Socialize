@@ -58,7 +58,7 @@ export const createActivity = createAsyncThunk(
 export const updateActivity = createAsyncThunk(
     'activities/updateActivity',
     async (activity : Activity) => {
-      return await ActivitiesApis.update(activity);
+      return await ActivitiesApis.update(activity.id, activity);
 });
 
 const activitiesSlice = createSlice({
@@ -158,6 +158,8 @@ const activitiesSlice = createSlice({
           const createdActivity = action.payload;
           state.activities = [...state.activities, createdActivity];
           state.selectedActivity = createdActivity;
+          console.log('set state.activity ' + createdActivity.id);
+          state.activity = createdActivity;
 
           state.submitting = false;
           state.activityEditMode = false;
@@ -166,18 +168,24 @@ const activitiesSlice = createSlice({
       });
 
 
-    builder.addCase(updateActivity.fulfilled, (state, action) => {
+      
+    builder
+      .addCase(updateActivity.pending, (state) => {
         state.submitting = true;
-
-        const updatedActivity = action.payload;
-        state.activities = [...state.activities.filter(a => a.id !== updatedActivity.id), updatedActivity];
-        state.selectedActivity = updatedActivity;
-
-        state.submitting = false;
-        state.activityEditMode = false;
-
         return state;
-    });
+      })
+      .addCase(updateActivity.fulfilled, (state, action) => {
+          const updatedActivity = action.payload;
+          state.activities = [...state.activities.filter(a => a.id !== updatedActivity.id), updatedActivity];
+          if(state.selectedActivity?.id === updatedActivity.id){
+            state.selectedActivity = updatedActivity;
+          }
+          
+          state.submitting = false;
+          state.activityEditMode = false;
+
+          return state;
+      });
 
   }
 })

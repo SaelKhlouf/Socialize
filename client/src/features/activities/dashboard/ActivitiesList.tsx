@@ -53,7 +53,3 @@ export function ActivitiesList() {
         </Segment>
     );
 }
-
-function setLoadingAction(arg0: boolean): any {
-    throw new Error("Function not implemented.");
-}
