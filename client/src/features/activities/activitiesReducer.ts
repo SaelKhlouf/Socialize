@@ -3,7 +3,7 @@ import { ActivitiesApis } from '../../app/api/agent'
 import { Activity } from '../../app/models/activity'
 
 export type ActivitiesState = {
-    activitiesRegistry: Map<string, Activity>
+    activitiesRegistry: {[key: string]: Activity};
     selectedActivity: Activity | undefined;
     loading: boolean;
     activityEditMode: boolean;
@@ -13,7 +13,7 @@ export type ActivitiesState = {
 }
 
 const initialState : ActivitiesState = {
-    activitiesRegistry: new Map(),
+    activitiesRegistry: {},
     loading: false,
     selectedActivity: undefined,
     activityEditMode: false,
@@ -109,8 +109,11 @@ const activitiesSlice = createSlice({
         return state;
       })
       .addCase(getActivities.fulfilled, (state, action) => {
-        const activitiesMapReducer = (map: Map<string, Activity>, activity: Activity) => map.set(activity.id, activity);
-        state.activitiesRegistry = action.payload.data.reduce(activitiesMapReducer, new Map());
+        const activitiesMapReducer = (map: {[key: string]: Activity}, activity: Activity) => {
+          map[activity.id] = activity;
+          return map;
+        };
+        state.activitiesRegistry = action.payload.data.reduce(activitiesMapReducer, {});
         state.loading = false;
         return state;
       });
@@ -140,10 +143,23 @@ const activitiesSlice = createSlice({
       .addCase(deleteActivity.fulfilled, (state, action) => {
         const {id, target} = action.payload;
         state.target = target;
-        state.activitiesRegistry.delete(id);
-        if (id === state.selectedActivity?.id) {
-            state.selectedActivity = undefined;
-            state.activityEditMode = false;
+        if(state.activitiesRegistry){
+          let updatedActivitiesRegistry = {};
+          
+          Object.keys(state.activitiesRegistry).map(key => {
+            if(key !== id){
+              updatedActivitiesRegistry = {
+                ...updatedActivitiesRegistry,
+                [key]: state.activitiesRegistry[key]
+              }
+            }
+          });
+          state.activitiesRegistry = updatedActivitiesRegistry;
+
+          if (id === state.selectedActivity?.id) {
+              state.selectedActivity = undefined;
+              state.activityEditMode = false;
+          }
         }
         return state;
       });
@@ -156,13 +172,15 @@ const activitiesSlice = createSlice({
       })
       .addCase(createActivity.fulfilled, (state, action) => {
           const createdActivity = action.payload;
-          state.activitiesRegistry.set(createdActivity.id, createdActivity);
+
+          state.activitiesRegistry = state.activitiesRegistry ?? {};
+          state.activitiesRegistry[createdActivity.id] = createdActivity;
+
           state.selectedActivity = createdActivity;
           state.activity = createdActivity;
 
           state.submitting = false;
           state.activityEditMode = false;
-
           return state;
       });
 
@@ -175,14 +193,15 @@ const activitiesSlice = createSlice({
       })
       .addCase(updateActivity.fulfilled, (state, action) => {
           const updatedActivity = action.payload;
-          state.activitiesRegistry.set(updatedActivity.id, updatedActivity);
+
+          state.activitiesRegistry = state.activitiesRegistry ?? {};
+          state.activitiesRegistry[updatedActivity.id] = updatedActivity;
           if(state.selectedActivity?.id === updatedActivity.id){
             state.selectedActivity = updatedActivity;
           }
           
           state.submitting = false;
           state.activityEditMode = false;
-
           return state;
       });
 

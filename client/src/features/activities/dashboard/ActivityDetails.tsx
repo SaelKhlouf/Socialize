@@ -26,7 +26,7 @@ export default function ActivityDetails() {
 
     useEffect(() => {
         if(params.id){
-            const activityInMemory = activitiesRegistry.get(params.id);
+            const activityInMemory = activitiesRegistry[params.id];
             if(!activityInMemory)
             {
                 dispatch(getActivity(params.id!));

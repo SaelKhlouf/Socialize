@@ -1,53 +1,46 @@
-import { useDispatch, useSelector } from "react-redux";
-import {Button, Item, Label, Segment} from "semantic-ui-react";
-import { deleteActivity, getActivity, selectActivityAction } from "../activitiesReducer";
-import { AppDispatch } from "../../../app/redux/store";
+import { Fragment } from "react";
+import { useSelector } from "react-redux";
+import { Item, Segment } from "semantic-ui-react";
+import { Activity } from "../../../app/models/activity";
 import { RootState } from "../../../app/redux/rootReducer";
-import { NavLink } from "react-router-dom";
+import { ActivityListItem } from "./ActivityListItem";
 
 export function ActivitiesList() {
-    const dispatch = useDispatch<AppDispatch>();
-
-    const target = useSelector((state: RootState) => state.activities.target);
     const activitiesRegistry = useSelector((state: RootState) => state.activities.activitiesRegistry);
 
-    const handleDeleteButtonClick = (event: any, id: string) => {
-        const target = event.target.getAttribute('name');
-        dispatch(deleteActivity({id, target}));
-    };
+    const activitiesGroupedByDate = (activitiesRegistry: {[key: string]: Activity}) => {
+        const activities = Object.values(activitiesRegistry);
+        const sortedActivities = activities.sort((a,b) => Date.parse(b.date) - Date.parse(a.date));
+        const groupedActivities : {[key: string]: Activity[]} = {};
 
-    const handleSelectActivity = (id: string) => {
-        const activityInMemory = activitiesRegistry.get(id);
-        if(activityInMemory){
-            dispatch(selectActivityAction(activityInMemory));
-        }else{
-            dispatch(getActivity(id));
-        }
+        sortedActivities.map(activity => {
+            if(!groupedActivities[activity.date]){
+                groupedActivities[activity.date] = [];
+            }
+            groupedActivities[activity.date].push(activity);
+        });
+        return groupedActivities;
     }
 
     return (
-        <Segment>
-            <Item.Group divided>
+            <Fragment>
                 {
-                    Array.from(activitiesRegistry.values()).map((activity) => {
-                        return <Item key={activity.id}>
-                            <Item.Image src={`/assets/categoryImages/${activity.category}.jpg`}/>
-                            <Item.Content>
-                                <Item.Header as='h2'>{activity.title}</Item.Header>
-                                <Item.Meta>{activity.category}</Item.Meta>
-                                <Item.Description>
-                                    {activity.description}
-                                </Item.Description>
-                                <Item.Extra>
-                                    <Button primary floated="right" onClick={() => handleSelectActivity(activity.id)} as={NavLink} to={`${activity.id}`}> View </Button>
-                                    <Button name = {activity.id} floated="right" color='red' loading={target === activity.id} onClick={(e) => handleDeleteButtonClick(e, activity.id)}> Delete </Button>
-                                    <Label as='a'>{activity.category}</Label>
-                                </Item.Extra>
-                            </Item.Content>
-                        </Item>
-                    })
+                    Object.values(activitiesGroupedByDate(activitiesRegistry))
+                    .map((activities) => 
+                        (
+                            <Fragment>
+                                <h4> Date: {activities[0].date} </h4>
+                                <Item.Group divided>
+                                    {
+                                        activities.map((activity) => 
+                                        <ActivityListItem key={activity.id} activity={activity} />
+                                        )
+                                    }
+                                </Item.Group>
+                            </Fragment>
+                        )
+                    )
                 }
-            </Item.Group>
-        </Segment>
+            </Fragment>
     );
 }
