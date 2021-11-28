@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {Button, Form, Segment} from "semantic-ui-react";
+import {Button, Form, Input, Segment, TextArea} from "semantic-ui-react";
 import { createActivity, getActivity, setActivityAction, setActivityEditModeAction, updateActivity } from "../activitiesReducer";
 import { AppDispatch } from "../../../app/redux/store";
 import { RootState } from "../../../app/redux/rootReducer";
@@ -58,23 +58,23 @@ export default function ActivityForm() {
         <Segment clearing>
             <Form onSubmit={handleFormSubmit} autoComplete="off">
             
-                <Form.Input placeholder='Title' name='title' value={activity.title}
+                <Form.Field control={Input} placeholder='Title' name='title' value={activity.title}
                         onChange={handleInputChange}/>
         
         
-                <Form.Input placeholder='Description' name='description' value={activity.description}
+                <Form.Field control={TextArea} placeholder='Description' name='description' value={activity.description}
                             onChange={handleInputChange}/>
             
-                <Form.Input placeholder='Category' name='category' value={activity.category} type="textarea"
+                <Form.Field control={Input} placeholder='Category' name='category' value={activity.category}
                         onChange={handleInputChange}/>
         
-                <Form.Input placeholder='Date' name='date' value={activity.date} type = "date"
+                <Form.Field control={Input} placeholder='Date' name='date' value={activity.date} type = "date"
                         onChange={handleInputChange}/>
         
-                <Form.Input placeholder='City' name='city' value={activity.city}
+                <Form.Field control={Input} placeholder='City' name='city' value={activity.city}
                         onChange={handleInputChange}/>
         
-                <Form.Input placeholder='Venue' name='venue' value={activity.venue}
+                <Form.Field control={Input} placeholder='Venue' name='venue' value={activity.venue}
                         onChange={handleInputChange}/>
         
 

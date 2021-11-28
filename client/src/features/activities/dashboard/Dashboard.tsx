@@ -1,4 +1,4 @@
-import {Grid, GridColumn} from "semantic-ui-react";
+import {Container, Grid, GridColumn, Menu} from "semantic-ui-react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../app/redux/rootReducer";
 import { AppDispatch } from "../../../app/redux/store";
@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { getActivities } from "../activitiesReducer";
 import LoadingComponent from "../../../app/layout/LoadingComponent";
 import { ActivitiesList } from "./ActivitiesList";
+import { ActivitiesListFilters } from "./ActivitiesListFilters";
 
 export default function Dashboard() {
     const dispatch = useDispatch<AppDispatch>();
@@ -22,10 +23,15 @@ export default function Dashboard() {
         return <LoadingComponent content={"Loading"} inverted={true} active={true}></LoadingComponent>;
     }
     return (
-        <Grid>
-            <GridColumn width={16}>
-                <ActivitiesList /> 
-            </GridColumn>
-        </Grid>
+        <Container>
+            <Grid>
+                <GridColumn width={10}>
+                    <ActivitiesList /> 
+                </GridColumn>
+                <GridColumn width={6}>
+                    <ActivitiesListFilters />
+                </GridColumn>
+            </Grid>
+        </Container>
     );
 }

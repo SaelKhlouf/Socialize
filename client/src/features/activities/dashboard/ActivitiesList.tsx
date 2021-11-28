@@ -1,3 +1,4 @@
+import moment from "moment";
 import { Fragment } from "react";
 import { useSelector } from "react-redux";
 import { Item, Segment } from "semantic-ui-react";
@@ -28,12 +29,12 @@ export function ActivitiesList() {
                     Object.values(activitiesGroupedByDate(activitiesRegistry))
                     .map((activities) => 
                         (
-                            <Fragment>
-                                <h4> Date: {activities[0].date} </h4>
-                                <Item.Group divided>
+                            <Fragment key={activities[0].date}>
+                                <h4 style={{color: "teal", marginBottom: 0}}>{moment(activities[0].date).format('YYYY-MM-DD')}</h4>
+                                <Item.Group divided style={{ marginTop: '2%'}}>
                                     {
                                         activities.map((activity) => 
-                                        <ActivityListItem key={activity.id} activity={activity} />
+                                            <ActivityListItem key={activity.id} activity={activity} />
                                         )
                                     }
                                 </Item.Group>

@@ -9,6 +9,7 @@ export type ActivitiesState = {
     activityEditMode: boolean;
     submitting: boolean;
     target: string | null;
+    activityComment: string;
     activity: Activity;
 }
 
@@ -19,6 +20,7 @@ const initialState : ActivitiesState = {
     activityEditMode: false,
     submitting: false,
     target: null,
+    activityComment: '',
     activity: {
       id: '',
       title: '',
@@ -86,6 +88,10 @@ const activitiesSlice = createSlice({
         state.activity = action.payload;
         return state;
     },
+    setActivityComment: (state, action: PayloadAction<string>) => {
+      state.activityComment = action.payload;
+      return state;
+  },
     clearSelectedActivityAction: (state) => {
       state.selectedActivity = undefined;
       state.activity = {
@@ -210,4 +216,4 @@ const activitiesSlice = createSlice({
 
 export const activitiesReducer = activitiesSlice.reducer;
 
-export const {selectActivityAction, setActivityEditModeAction, setActivityAction, clearSelectedActivityAction} = activitiesSlice.actions;
+export const {selectActivityAction, setActivityEditModeAction, setActivityAction, clearSelectedActivityAction, setActivityComment} = activitiesSlice.actions;
