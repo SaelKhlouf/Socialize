@@ -1,4 +1,4 @@
-import {Container, Grid, GridColumn, Menu} from "semantic-ui-react";
+import {Container, Grid, GridColumn} from "semantic-ui-react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../app/redux/rootReducer";
 import { AppDispatch } from "../../../app/redux/store";

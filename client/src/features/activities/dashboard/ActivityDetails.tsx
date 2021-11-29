@@ -6,7 +6,6 @@ import { RootState } from "../../../app/redux/rootReducer";
 import { NavLink, useParams } from "react-router-dom";
 import { useEffect } from "react";
 import LoadingComponent from "../../../app/layout/LoadingComponent";
-import { relative } from "path";
 import moment from "moment";
 import { ActivityComment } from "./ActivityComment";
 import { ActivityAttendanceInfo } from "./ActivityAttendanceInfo";

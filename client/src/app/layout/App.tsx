@@ -10,10 +10,12 @@ import HomePageComponent from "./HomePageComponent";
 function App() {
     return (
         <Fragment>
-            <Container style={{marginTop: '6em'}}>
+            
                 <Routes>
                     <Route path="" element={ <HomePageComponent />} />
+                    
                     <Route path="activities/*" element={
+                        <Container style={{marginTop: '6em'}}>
                         <Fragment>   
                             <NavBar/>
                             <Routes>
@@ -23,9 +25,11 @@ function App() {
                                 <Route path=":id/edit" element={<ActivityForm />} />
                             </Routes>
                         </Fragment>
+                        </Container>
                     } />
+                   
                 </Routes>
-            </Container>
+            
         </Fragment>
     );
 }

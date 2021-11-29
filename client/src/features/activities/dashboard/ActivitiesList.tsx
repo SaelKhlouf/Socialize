@@ -1,7 +1,7 @@
 import moment from "moment";
 import { Fragment } from "react";
 import { useSelector } from "react-redux";
-import { Item, Segment } from "semantic-ui-react";
+import { Item } from "semantic-ui-react";
 import { Activity } from "../../../app/models/activity";
 import { RootState } from "../../../app/redux/rootReducer";
 import { ActivityListItem } from "./ActivityListItem";
@@ -14,7 +14,7 @@ export function ActivitiesList() {
         const sortedActivities = activities.sort((a,b) => Date.parse(b.date) - Date.parse(a.date));
         const groupedActivities : {[key: string]: Activity[]} = {};
 
-        sortedActivities.map(activity => {
+        sortedActivities.forEach(activity => {
             if(!groupedActivities[activity.date]){
                 groupedActivities[activity.date] = [];
             }

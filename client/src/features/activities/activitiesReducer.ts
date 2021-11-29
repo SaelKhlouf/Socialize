@@ -8,7 +8,6 @@ export type ActivitiesState = {
     loading: boolean;
     activityEditMode: boolean;
     submitting: boolean;
-    target: string | null;
     activityComment: string;
     activity: Activity;
 }
@@ -19,7 +18,6 @@ const initialState : ActivitiesState = {
     selectedActivity: undefined,
     activityEditMode: false,
     submitting: false,
-    target: null,
     activityComment: '',
     activity: {
       id: '',
@@ -46,9 +44,9 @@ export const getActivity = createAsyncThunk(
 
 export const deleteActivity = createAsyncThunk(
     'activities/deleteActivity',
-    async (data: {id: string, target: string}) => {
-      await ActivitiesApis.delete(data.id);
-      return data;
+    async (id: string) => {
+      await ActivitiesApis.delete(id);
+      return id;
 });
 
 export const createActivity = createAsyncThunk(
@@ -140,19 +138,13 @@ const activitiesSlice = createSlice({
       
 
     builder
-      .addCase(deleteActivity.pending, (state, action) => {
-        const {target} = action.meta.arg;
-        state.target = target;
-
-        return state;
-      })
       .addCase(deleteActivity.fulfilled, (state, action) => {
-        const {id, target} = action.payload;
-        state.target = target;
+        const id = action.payload;
+
         if(state.activitiesRegistry){
           let updatedActivitiesRegistry = {};
           
-          Object.keys(state.activitiesRegistry).map(key => {
+          Object.keys(state.activitiesRegistry).forEach(key => {
             if(key !== id){
               updatedActivitiesRegistry = {
                 ...updatedActivitiesRegistry,

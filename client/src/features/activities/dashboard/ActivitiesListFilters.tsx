@@ -1,5 +1,5 @@
 import { Fragment } from "react";
-import { Icon, Menu, Segment } from "semantic-ui-react";
+import { Icon, Menu } from "semantic-ui-react";
 import Calendar from 'react-calendar';
 
 export function ActivitiesListFilters(){

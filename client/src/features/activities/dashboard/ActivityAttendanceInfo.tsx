@@ -1,4 +1,4 @@
-import { Item, Segment } from "semantic-ui-react";
+import { Segment } from "semantic-ui-react";
 import { ActivityAttendanceInfoRow } from "./ActivityAttendanceInfoRow";
 
 export function ActivityAttendanceInfo(){
@@ -19,6 +19,6 @@ export function ActivityAttendanceInfo(){
             <Segment>
                 <ActivityAttendanceInfoRow />
             </Segment>
-            
+
         </Segment.Group>
     )}

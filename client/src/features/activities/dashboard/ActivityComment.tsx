@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Item } from "semantic-ui-react";
 
 interface ActivityCommentProps{
@@ -19,7 +20,7 @@ export function ActivityComment({author, body, time}: ActivityCommentProps){
                     <Item.Meta style={{marginTop: '0.1em'}}>
                         {body}
                     </Item.Meta>
-                    <a> Reply </a>
+                    <Link to=''> Reply </Link>
                 </Item.Content>
             </Item>
         </Item.Group>

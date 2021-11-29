@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import {Button, Icon, Item, Label, Segment} from "semantic-ui-react";
-import { deleteActivity, getActivity, selectActivityAction } from "../activitiesReducer";
+import { getActivity, selectActivityAction } from "../activitiesReducer";
 import { AppDispatch } from "../../../app/redux/store";
 import { RootState } from "../../../app/redux/rootReducer";
 import { NavLink } from "react-router-dom";
@@ -14,13 +14,8 @@ interface ActivityListItemProps{
 export function ActivityListItem({activity}: ActivityListItemProps) {
     const dispatch = useDispatch<AppDispatch>();
 
-    const target = useSelector((state: RootState) => state.activities.target);
     const activitiesRegistry = useSelector((state: RootState) => state.activities.activitiesRegistry);
 
-    const handleDeleteButtonClick = (event: any, id: string) => {
-        const target = event.target.getAttribute('name');
-        dispatch(deleteActivity({id, target}));
-    };
     const handleSelectActivity = (id: string) => {
         const activityInMemory = activitiesRegistry[id];
         if(activityInMemory){
