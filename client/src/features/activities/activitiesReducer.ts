@@ -4,9 +4,7 @@ import { Activity } from '../../app/models/activity'
 
 export type ActivitiesState = {
     activitiesRegistry: {[key: string]: Activity};
-    selectedActivity: Activity | undefined;
     loading: boolean;
-    activityEditMode: boolean;
     submitting: boolean;
     activityComment: string;
     activity: Activity;
@@ -15,8 +13,6 @@ export type ActivitiesState = {
 const initialState : ActivitiesState = {
     activitiesRegistry: {},
     loading: false,
-    selectedActivity: undefined,
-    activityEditMode: false,
     submitting: false,
     activityComment: '',
     activity: {
@@ -66,32 +62,15 @@ const activitiesSlice = createSlice({
   initialState,
   // add your non-async reducers here
   reducers: {
-    setLoadingAction: (state, action: PayloadAction<boolean>) => {
-      state.loading = action.payload;
-      return state;
-    },
-    selectActivityAction: (state, action: PayloadAction<Activity | undefined>) => {
-        state.selectedActivity = action.payload;
-        return state;
-    },
-    setActivityEditModeAction: (state, action: PayloadAction<boolean>) => {
-        state.activityEditMode = action.payload;
-
-        if(state.selectedActivity)
-          state.activity = state.selectedActivity;
-
-        return state;
-    },
-    setActivityAction: (state, action: PayloadAction<Activity>) => {
+    setActivityReducer: (state, action: PayloadAction<Activity>) => {
         state.activity = action.payload;
         return state;
     },
-    setActivityComment: (state, action: PayloadAction<string>) => {
+    setActivityCommentReducer: (state, action: PayloadAction<string>) => {
       state.activityComment = action.payload;
       return state;
-  },
-    clearSelectedActivityAction: (state) => {
-      state.selectedActivity = undefined;
+    },
+    clearActivityReducer: (state) => {
       state.activity = {
         id: '',
         title: '',
@@ -101,14 +80,13 @@ const activitiesSlice = createSlice({
         city: '',
         venue: '',
       };
-      state.activityEditMode = true;
       return state;
     },
   },
   // add your async reducers in extraReducers
   extraReducers: (builder) => {
     builder
-      .addCase(getActivities.pending, (state, action) => {
+      .addCase(getActivities.pending, (state) => {
         state.loading = true;
         return state;
       })
@@ -124,14 +102,12 @@ const activitiesSlice = createSlice({
 
 
     builder
-      .addCase(getActivity.pending, (state, action) => {
+      .addCase(getActivity.pending, (state) => {
         state.loading = true;
         return state;
       });
       builder
       .addCase(getActivity.fulfilled, (state, action) => {
-        state.selectedActivity = action.payload;
-        state.activity = state.selectedActivity;
         state.loading = false;
         return state;
       });
@@ -154,10 +130,6 @@ const activitiesSlice = createSlice({
           });
           state.activitiesRegistry = updatedActivitiesRegistry;
 
-          if (id === state.selectedActivity?.id) {
-              state.selectedActivity = undefined;
-              state.activityEditMode = false;
-          }
         }
         return state;
       });
@@ -174,11 +146,9 @@ const activitiesSlice = createSlice({
           state.activitiesRegistry = state.activitiesRegistry ?? {};
           state.activitiesRegistry[createdActivity.id] = createdActivity;
 
-          state.selectedActivity = createdActivity;
           state.activity = createdActivity;
 
           state.submitting = false;
-          state.activityEditMode = false;
           return state;
       });
 
@@ -194,12 +164,8 @@ const activitiesSlice = createSlice({
 
           state.activitiesRegistry = state.activitiesRegistry ?? {};
           state.activitiesRegistry[updatedActivity.id] = updatedActivity;
-          if(state.selectedActivity?.id === updatedActivity.id){
-            state.selectedActivity = updatedActivity;
-          }
           
           state.submitting = false;
-          state.activityEditMode = false;
           return state;
       });
 
@@ -208,4 +174,4 @@ const activitiesSlice = createSlice({
 
 export const activitiesReducer = activitiesSlice.reducer;
 
-export const {selectActivityAction, setActivityEditModeAction, setActivityAction, clearSelectedActivityAction, setActivityComment} = activitiesSlice.actions;
+export const {setActivityReducer, clearActivityReducer, setActivityCommentReducer} = activitiesSlice.actions;

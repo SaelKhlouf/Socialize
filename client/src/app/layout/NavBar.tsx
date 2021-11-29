@@ -1,6 +1,6 @@
 import {Button, Container, Image, Menu} from "semantic-ui-react";
 import {Fragment} from 'react';
-import { clearSelectedActivityAction } from "../../features/activities/activitiesReducer";
+import { clearActivityReducer } from "../../features/activities/activitiesReducer";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../redux/store";
 import { NavLink } from "react-router-dom";
@@ -10,7 +10,7 @@ export default function NavBar() {
     const dispatch = useDispatch<AppDispatch>();
 
     const handleOpenEditActivityForm = () => {
-        dispatch(clearSelectedActivityAction());
+        dispatch(clearActivityReducer());
     }
 
     let activeStyle = {

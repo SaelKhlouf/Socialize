@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {Button, Form, Input, Segment, TextArea} from "semantic-ui-react";
-import { createActivity, getActivity, setActivityAction, setActivityEditModeAction, updateActivity } from "../activitiesReducer";
+import { createActivity, getActivity, setActivityReducer, updateActivity } from "../activitiesReducer";
 import { AppDispatch } from "../../../app/redux/store";
 import { RootState } from "../../../app/redux/rootReducer";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
@@ -16,7 +16,7 @@ export default function ActivityForm() {
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const {name, value} = event.target;
-        dispatch(setActivityAction({
+        dispatch(setActivityReducer({
             ...activity,
             [name]: value
         }));
@@ -34,21 +34,16 @@ export default function ActivityForm() {
         }
     }
 
-    const handleCancelEditActivityForm = () => {
-        dispatch(setActivityEditModeAction(false));
-    }
-
     let params = useParams();
 
-    const selectedActivity = useSelector((state: RootState) => state.activities.selectedActivity);
     const loading = useSelector((state: RootState) => state.activities.loading);
 
     useEffect(() => {
-        if(!selectedActivity && params.id)
+        if(!activity && params.id)
         {
             dispatch(getActivity(params.id!));
         }
-    }, [dispatch, selectedActivity, params.id]);
+    }, [dispatch, activity, params.id]);
 
     if(loading){
         return <LoadingComponent content={"Loading"} inverted={true} active={true}></LoadingComponent>;
@@ -79,7 +74,7 @@ export default function ActivityForm() {
         
 
                 <Button primary floated="right" type='submit' loading={submitting}>Submit</Button>
-                <Button secondary floated="left" type='button' onClick={handleCancelEditActivityForm} as={NavLink} to={`/activities/${activity.id}`}>
+                <Button secondary floated="left" type='button' as={NavLink} to={`/activities/${activity.id}`}>
                     Cancel
                 </Button>
             </Form>

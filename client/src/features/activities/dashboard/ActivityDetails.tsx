@@ -1,7 +1,7 @@
 import {Button, Card, Container, Form, Grid, GridColumn, Icon, Image, Segment, TextArea} from "semantic-ui-react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../../../app/redux/store";
-import { getActivity, selectActivityAction, setActivityComment, setActivityEditModeAction } from "../activitiesReducer";
+import { getActivity, setActivityCommentReducer } from "../activitiesReducer";
 import { RootState } from "../../../app/redux/rootReducer";
 import { NavLink, useParams } from "react-router-dom";
 import { useEffect } from "react";
@@ -13,19 +13,11 @@ import { ActivityAttendanceInfo } from "./ActivityAttendanceInfo";
 export default function ActivityDetails() {
     const dispatch = useDispatch<AppDispatch>();
 
-    const selectedActivity = useSelector((state: RootState) => state.activities.selectedActivity);
+    const activity = useSelector((state: RootState) => state.activities.activity);
     const activitiesRegistry = useSelector((state: RootState) => state.activities.activitiesRegistry);
     const loading = useSelector((state: RootState) => state.activities.loading);
     const activityComment = useSelector((state: RootState) => state.activities.activityComment);
     const submitting = useSelector((state: RootState) => state.activities.submitting);
-
-    const handleCancelActivity = () => {
-        dispatch(selectActivityAction(undefined));
-    }
-
-    const handleOpenEditActivityForm = () => {
-        dispatch(setActivityEditModeAction(true));
-    }
 
     let params = useParams();
 
@@ -41,7 +33,7 @@ export default function ActivityDetails() {
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const {value} = event.target;
-        dispatch(setActivityComment(value));
+        dispatch(setActivityCommentReducer(value));
     };
 
     const handleFormSubmit = async () => {
@@ -58,15 +50,15 @@ export default function ActivityDetails() {
             <GridColumn width={10}>
 
                 <Card fluid style={{position: 'relative', display: 'flex'}}>
-                        <Image style={{filter : 'brightness(50%)'}} src={`/assets/categoryImages/${selectedActivity?.category}.jpg`}/>
+                        <Image style={{filter : 'brightness(50%)'}} src={`/assets/categoryImages/${activity?.category}.jpg`}/>
                         <Card.Content style={{
                             position: "absolute",
                             left: '5%',
                             top: '50%'
                         }}>
-                            <Card.Header style={{color: 'white', fontSize: '2em'}}> <p>{selectedActivity?.title}</p> </Card.Header>
+                            <Card.Header style={{color: 'white', fontSize: '2em'}}> <p>{activity?.title}</p> </Card.Header>
                             <Card.Meta>
-                                <p style={{color: 'white', fontSize: '1.0em', opacity: '80%'}}> {moment(selectedActivity?.date).format('YYYY-MM-DD')} </p>
+                                <p style={{color: 'white', fontSize: '1.0em', opacity: '80%'}}> {moment(activity?.date).format('YYYY-MM-DD')} </p>
                             </Card.Meta>
                             <Card.Description style={{color: 'white', marginTop: '0.6em', fontSize: '1.0em'}}>
                                 <p> Hosted by <span style={{fontWeight: 'bold'}}> Sael </span> </p>
@@ -75,13 +67,13 @@ export default function ActivityDetails() {
 
                     <Card.Content extra>
                         <Card.Description>
-                            <Button color='teal'  onClick={handleOpenEditActivityForm} as={NavLink} to={`/activities/${selectedActivity?.id}/edit`}>
+                            <Button color='teal'>
                                 Join activity
                             </Button>
-                            <Button onClick={handleCancelActivity} as={NavLink} to="/activities/">
+                            <Button>
                                 Cancel attendance
                             </Button>
-                            <Button color='orange' style={{float: 'right'}}>
+                            <Button color='orange' style={{float: 'right'}} as={NavLink} to={`/activities/${activity?.id}/edit`}>
                                 Manage event
                             </Button>
                         </Card.Description>
@@ -92,17 +84,17 @@ export default function ActivityDetails() {
                 <Segment.Group divided>
                     <Segment>
                         <Icon name='info' color='teal' /> 
-                        <span style={{marginLeft:'1em'}}> {selectedActivity?.category} </span>
+                        <span style={{marginLeft:'1em'}}> {activity?.category} </span>
                     </Segment>
 
                     <Segment>
                         <Icon name='calendar' color='teal' /> 
-                        <span style={{marginLeft:'1em'}}> {moment(selectedActivity?.date).format('YYYY-MM-DD')} </span>
+                        <span style={{marginLeft:'1em'}}> {moment(activity?.date).format('YYYY-MM-DD')} </span>
                     </Segment>
 
                     <Segment>
                         <Icon name='location arrow' color='teal' /> 
-                        <span style={{marginLeft:'1em'}}> {selectedActivity?.city} </span>
+                        <span style={{marginLeft:'1em'}}> {activity?.city} </span>
                     </Segment>
                 </Segment.Group>
 

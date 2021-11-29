@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import {Button, Icon, Item, Label, Segment} from "semantic-ui-react";
-import { getActivity, selectActivityAction } from "../activitiesReducer";
+import { getActivity, setActivityReducer } from "../activitiesReducer";
 import { AppDispatch } from "../../../app/redux/store";
 import { RootState } from "../../../app/redux/rootReducer";
 import { NavLink } from "react-router-dom";
@@ -19,7 +19,7 @@ export function ActivityListItem({activity}: ActivityListItemProps) {
     const handleSelectActivity = (id: string) => {
         const activityInMemory = activitiesRegistry[id];
         if(activityInMemory){
-            dispatch(selectActivityAction(activityInMemory));
+            dispatch(setActivityReducer(activityInMemory));
         }else{
             dispatch(getActivity(id));
         }
