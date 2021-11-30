@@ -46,7 +46,7 @@ namespace API.Controllers
 
         [HttpPost]
         [ProducesResponseType(typeof(ActivityDto), StatusCodes.Status201Created)]
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> Post(ActivityRequest activity)
         {
             var response = await _activitiesService.PostAsync(activity);
