@@ -15,14 +15,17 @@ axios.interceptors.response.use(async response => {
             toast.error('Internal server error.');
             break;
         case 400:
-            toast.error('Bad request.');
+            if(error.response?.data.errors){
+                toast.error('Validation errors.');
+            } else {
+                toast.error('Bad request error.');
+            }
             break;
         case 401:
             toast.error('Authentication error.');
             break;
         case 404:
             toast.error('Not found.');
-            throw error;
             break;
     }
 

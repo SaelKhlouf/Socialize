@@ -8,6 +8,7 @@ export type ActivitiesState = {
     submitting: boolean;
     activityComment: string;
     activity: Activity;
+    validationErrors: string[];
 }
 
 const initialState : ActivitiesState = {
@@ -23,7 +24,8 @@ const initialState : ActivitiesState = {
       date: '',
       city: '',
       venue: '',
-  }
+  },
+  validationErrors: []
 }
 
 export const getActivities = createAsyncThunk(
@@ -80,6 +82,10 @@ const activitiesSlice = createSlice({
         city: '',
         venue: '',
       };
+      return state;
+    },
+    setValidationErrorsReducer: (state, action: PayloadAction<string[]>) => {
+      state.validationErrors = action.payload;
       return state;
     },
   },
@@ -174,4 +180,4 @@ const activitiesSlice = createSlice({
 
 export const activitiesReducer = activitiesSlice.reducer;
 
-export const {setActivityReducer, clearActivityReducer, setActivityCommentReducer} = activitiesSlice.actions;
+export const {setActivityReducer, clearActivityReducer, setActivityCommentReducer, setValidationErrorsReducer} = activitiesSlice.actions;
