@@ -8,6 +8,7 @@ import { Provider } from 'react-redux';
 import { store } from './app/redux/store';
 import { BrowserRouter } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
+import 'react-datepicker/dist/react-datepicker.css';
 
 ReactDOM.render(
   <Provider store = {store}>

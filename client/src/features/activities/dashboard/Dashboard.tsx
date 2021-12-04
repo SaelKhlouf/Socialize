@@ -4,7 +4,7 @@ import { RootState } from "../../../app/redux/rootReducer";
 import { AppDispatch } from "../../../app/redux/store";
 import { useEffect } from "react";
 import { getActivities } from "../activitiesReducer";
-import LoadingComponent from "../../../app/layout/LoadingComponent";
+import LoadingComponent from "../../../app/layout/loading";
 import { ActivitiesList } from "./ActivitiesList";
 import { ActivitiesListFilters } from "./ActivitiesListFilters";
 

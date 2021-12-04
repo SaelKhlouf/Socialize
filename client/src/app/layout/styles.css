@@ -25,3 +25,7 @@ body {
         rgb(29, 170, 175) 85%
     );
 }
+
+.validation-error-message{
+    color: red;
+}

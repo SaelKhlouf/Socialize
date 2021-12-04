@@ -1,6 +1,6 @@
 import { Fragment } from "react";
 import { Button, Container, Icon, Segment } from "semantic-ui-react";
-import NavBar from "../../app/layout/NavBar";
+import NavBar from "../../app/layout/navbar";
 
 export function NotFound(){
     return (

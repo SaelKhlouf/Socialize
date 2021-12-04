@@ -1,9 +1,10 @@
-import moment from "moment";
+import { differenceInDays } from "date-fns";
 import { Fragment } from "react";
 import { useSelector } from "react-redux";
 import { Item } from "semantic-ui-react";
 import { Activity } from "../../../app/models/activity";
 import { RootState } from "../../../app/redux/rootReducer";
+import { formatDateWithoutTime } from "../../../common/helpers";
 import { ActivityListItem } from "./ActivityListItem";
 
 export function ActivitiesList() {
@@ -11,14 +12,19 @@ export function ActivitiesList() {
 
     const activitiesGroupedByDate = (activitiesRegistry: {[key: string]: Activity}) => {
         const activities = Object.values(activitiesRegistry);
-        const sortedActivities = activities.sort((a,b) => Date.parse(b.date) - Date.parse(a.date));
+
+
+        const sortedActivities = activities.sort((a,b) => differenceInDays(b.date!, a.date!));
         const groupedActivities : {[key: string]: Activity[]} = {};
 
         sortedActivities.forEach(activity => {
-            if(!groupedActivities[activity.date]){
-                groupedActivities[activity.date] = [];
+            if(activity.date){
+                const formattedDateWithoutTime = formatDateWithoutTime(activity.date!);
+                if(!groupedActivities[formattedDateWithoutTime]){
+                    groupedActivities[formattedDateWithoutTime] = [];
+                }
+                groupedActivities[formattedDateWithoutTime].push(activity);
             }
-            groupedActivities[activity.date].push(activity);
         });
         return groupedActivities;
     }
@@ -28,18 +34,26 @@ export function ActivitiesList() {
                 {
                     Object.values(activitiesGroupedByDate(activitiesRegistry))
                     .map((activities) => 
-                        (
-                            <Fragment key={activities[0].date}>
-                                <h4 style={{color: "teal", marginBottom: 0}}>{moment(activities[0].date).format('YYYY-MM-DD')}</h4>
-                                <Item.Group divided style={{ marginTop: '2%'}}>
-                                    {
-                                        activities.map((activity) => 
-                                            <ActivityListItem key={activity.id} activity={activity} />
-                                        )
-                                    }
-                                </Item.Group>
-                            </Fragment>
-                        )
+                        {
+                            const date = activities[0].date;
+                            let formattedDateWithoutTime;
+
+                            if(date){
+                                formattedDateWithoutTime = formatDateWithoutTime(date!);
+                            }
+                            return(
+                                <Fragment key={formattedDateWithoutTime}>
+                                    <h4 style={{color: "teal", marginBottom: 0}}>{formattedDateWithoutTime}</h4>
+                                    <Item.Group divided style={{ marginTop: '2%'}}>
+                                        {
+                                            activities.map((activity) => 
+                                                <ActivityListItem key={activity.id} activity={activity} />
+                                            )
+                                        }
+                                    </Item.Group>
+                                </Fragment>
+                            );
+                        }
                     )
                 }
             </Fragment>

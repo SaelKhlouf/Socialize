@@ -2,30 +2,22 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import { ActivitiesApis } from '../../app/api/agent'
 import { Activity } from '../../app/models/activity'
 
-export type ActivitiesState = {
+export type activitiesState = {
     activitiesRegistry: {[key: string]: Activity};
     loading: boolean;
     submitting: boolean;
     activityComment: string;
-    activity: Activity;
+    activity: Activity | null;
     validationErrors: string[];
 }
 
-const initialState : ActivitiesState = {
+const initialState : activitiesState = {
     activitiesRegistry: {},
     loading: false,
     submitting: false,
     activityComment: '',
-    activity: {
-      id: '',
-      title: '',
-      description: '',
-      category: '',
-      date: '',
-      city: '',
-      venue: '',
-  },
-  validationErrors: []
+    activity: null,
+    validationErrors: []
 }
 
 export const getActivities = createAsyncThunk(
@@ -65,23 +57,15 @@ const activitiesSlice = createSlice({
   // add your non-async reducers here
   reducers: {
     setActivityReducer: (state, action: PayloadAction<Activity>) => {
-        state.activity = action.payload;
-        return state;
+      state.activity = action.payload;
+      return state;
     },
     setActivityCommentReducer: (state, action: PayloadAction<string>) => {
       state.activityComment = action.payload;
       return state;
     },
     clearActivityReducer: (state) => {
-      state.activity = {
-        id: '',
-        title: '',
-        description: '',
-        category: '',
-        date: '',
-        city: '',
-        venue: '',
-      };
+      state.activity = null;
       return state;
     },
     setValidationErrorsReducer: (state, action: PayloadAction<string[]>) => {
@@ -114,6 +98,12 @@ const activitiesSlice = createSlice({
       });
       builder
       .addCase(getActivity.fulfilled, (state, action) => {
+        state.activity = action.payload;
+        const {activity, activitiesRegistry} = state;
+
+        if(!activitiesRegistry[activity.id]){
+          activitiesRegistry[activity.id] = activity;
+        }
         state.loading = false;
         return state;
       });
@@ -170,6 +160,7 @@ const activitiesSlice = createSlice({
 
           state.activitiesRegistry = state.activitiesRegistry ?? {};
           state.activitiesRegistry[updatedActivity.id] = updatedActivity;
+          state.activity = updatedActivity;
           
           state.submitting = false;
           return state;

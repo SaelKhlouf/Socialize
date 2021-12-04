@@ -2,9 +2,8 @@ import { Fragment } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import { Button, Container, Message, Segment } from "semantic-ui-react";
-import { isForInStatement } from "typescript";
 import { Requests } from "../../app/api/agent";
-import NavBar from "../../app/layout/NavBar";
+import NavBar from "../../app/layout/navbar";
 import { RootState } from "../../app/redux/rootReducer";
 import { AppDispatch } from "../../app/redux/store";
 import { setValidationErrorsReducer } from "../activities/activitiesReducer";
@@ -20,7 +19,7 @@ export function ErrorsTests(){
         try{
             await Requests.post('/activities', {});
         }catch(err: any){
-            const {message, errors} = err.response.data;
+            const {errors} = err.response.data;
             dispatch(setValidationErrorsReducer(errors));
         }
     }

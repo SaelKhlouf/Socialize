@@ -5,21 +5,16 @@ import { getActivity, setActivityCommentReducer } from "../activitiesReducer";
 import { RootState } from "../../../app/redux/rootReducer";
 import { NavLink, useParams } from "react-router-dom";
 import { useEffect } from "react";
-import LoadingComponent from "../../../app/layout/LoadingComponent";
-import moment from "moment";
+import LoadingComponent from "../../../app/layout/loading";
 import { ActivityComment } from "./ActivityComment";
 import { ActivityAttendanceInfo } from "./ActivityAttendanceInfo";
+import { formatDateWithoutTime } from "../../../common/helpers";
 
 export default function ActivityDetails() {
     const dispatch = useDispatch<AppDispatch>();
-
-    const activity = useSelector((state: RootState) => state.activities.activity);
-    const activitiesRegistry = useSelector((state: RootState) => state.activities.activitiesRegistry);
-    const loading = useSelector((state: RootState) => state.activities.loading);
-    const activityComment = useSelector((state: RootState) => state.activities.activityComment);
-    const submitting = useSelector((state: RootState) => state.activities.submitting);
-
     let params = useParams();
+
+    const {activity, activitiesRegistry, loading, activityComment, submitting} = useSelector((state: RootState) => state.activities);
 
     useEffect(() => {
         if(params.id){
@@ -35,10 +30,6 @@ export default function ActivityDetails() {
         const {value} = event.target;
         dispatch(setActivityCommentReducer(value));
     };
-
-    const handleFormSubmit = async () => {
-
-    }
 
     if(loading){
         return <LoadingComponent content={"Loading"} inverted={true} active={true}></LoadingComponent>;
@@ -58,7 +49,7 @@ export default function ActivityDetails() {
                         }}>
                             <Card.Header style={{color: 'white', fontSize: '2em'}}> <p>{activity?.title}</p> </Card.Header>
                             <Card.Meta>
-                                <p style={{color: 'white', fontSize: '1.0em', opacity: '80%'}}> {moment(activity?.date).format('YYYY-MM-DD')} </p>
+                                <p style={{color: 'white', fontSize: '1.0em', opacity: '80%'}}> {activity && activity.date && formatDateWithoutTime(activity.date!)} </p>
                             </Card.Meta>
                             <Card.Description style={{color: 'white', marginTop: '0.6em', fontSize: '1.0em'}}>
                                 <p> Hosted by <span style={{fontWeight: 'bold'}}> Sael </span> </p>
@@ -84,12 +75,12 @@ export default function ActivityDetails() {
                 <Segment.Group divided>
                     <Segment>
                         <Icon name='info' color='teal' /> 
-                        <span style={{marginLeft:'1em'}}> {activity?.category} </span>
+                        <span style={{marginLeft:'1em'}}> {activity?.description} </span>
                     </Segment>
 
                     <Segment>
                         <Icon name='calendar' color='teal' /> 
-                        <span style={{marginLeft:'1em'}}> {moment(activity?.date).format('YYYY-MM-DD')} </span>
+                        <span style={{marginLeft:'1em'}}> {activity && activity.date && formatDateWithoutTime(activity.date!)} </span>
                     </Segment>
 
                     <Segment>
@@ -111,7 +102,7 @@ export default function ActivityDetails() {
 
                     <Segment clearing>
                         
-                        <Form onSubmit={handleFormSubmit} autoComplete="off">
+                        <Form autoComplete="off">
                         
                             <Form.Field control={TextArea} placeholder='Write a comment here' name='comment' value={activityComment} type="textarea"
                                         onChange={handleInputChange}/>

@@ -1,11 +1,11 @@
 import {Fragment} from "react";
 import {Container} from "semantic-ui-react";
-import NavBar from "./NavBar";
+import NavBar from "./navbar";
 import Dashboard from "../../features/activities/dashboard/Dashboard";
 import { Route, Routes } from "react-router-dom";
 import ActivityForm from "../../features/activities/dashboard/ActivityForm";
 import ActivityDetails from "../../features/activities/dashboard/ActivityDetails";
-import HomePageComponent from "./HomePageComponent";
+import HomePageComponent from "./homepage";
 import { NotFound } from "../../features/errors/NotFound";
 import { ToastContainer } from "react-toastify";
 import { ErrorsTests } from "../../features/errors/ErrorsTests";

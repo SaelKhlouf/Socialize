@@ -5,7 +5,7 @@ import { AppDispatch } from "../../../app/redux/store";
 import { RootState } from "../../../app/redux/rootReducer";
 import { NavLink } from "react-router-dom";
 import { Activity } from "../../../app/models/activity";
-import moment from "moment";
+import { formatDateWithoutTime } from "../../../common/helpers";
 
 interface ActivityListItemProps{
     activity: Activity;
@@ -41,8 +41,7 @@ export function ActivityListItem({activity}: ActivityListItemProps) {
 
             <Segment>
                 <Icon name="clock"/>
-                
-                {moment(activity.date).format('YYYY-MM-DD') }
+                    {activity.date && formatDateWithoutTime(activity.date!) }
                 <Icon name="location arrow"/>
                 {activity.city}
             </Segment>
