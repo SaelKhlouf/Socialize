@@ -6,6 +6,7 @@ import { Form, Label } from 'semantic-ui-react';
      label?: string;
      placeholder?: string;
      value?: string;
+     type?: string;
 }
 
 export function CustomTextInput({label, ...props} : Props){
