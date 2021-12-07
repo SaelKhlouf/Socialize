@@ -1,6 +1,5 @@
 import {Fragment} from "react";
 import {Container} from "semantic-ui-react";
-import NavBar from "./navbar";
 import Dashboard from "../../features/activities/dashboard/Dashboard";
 import { Route, Routes } from "react-router-dom";
 import ActivityForm from "../../features/activities/dashboard/ActivityForm";
@@ -10,6 +9,7 @@ import { NotFound } from "../../features/errors/NotFound";
 import { ToastContainer } from "react-toastify";
 import { ErrorsTests } from "../../features/errors/ErrorsTests";
 import { Login } from "../../features/users/login";
+import NavBar from "./navbar";
 
 function App() {
     return (

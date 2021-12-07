@@ -7,13 +7,13 @@ import { RootState } from "../../../app/redux/rootReducer";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import LoadingComponent from "../../../app/layout/loading";
 import { Form, Formik } from "formik";
-import { Activity } from "../../../app/models/activity";
 import * as Yup from 'yup';
 import { CustomTextInput } from "../../../common/form/CustomTextInput";
 import { CustomTextArea } from "../../../common/form/CustomTextArea";
 import { CustomDateInput } from "../../../common/form/CustomDateInput";
 import { CustomSelectInput } from "../../../common/form/CustomSelectInput";
 import { ACTIVITY_CATEGORIES } from "../../../common/constants";
+import { Activity } from "../models";
 
 export default function ActivityForm() {
     const dispatch = useDispatch<AppDispatch>();
@@ -44,7 +44,10 @@ export default function ActivityForm() {
 
     const onFormSubmit = async (values: Activity) => {
         if(values.id){
-            await dispatch(updateActivity(values));
+            await dispatch(updateActivity({
+                id: values.id,
+                body: values
+            }));
             navigate(`/activities/${values.id}`);
         }else{
            const data = await dispatch(createActivity(values)).unwrap();

@@ -2,9 +2,9 @@ import { differenceInDays } from "date-fns";
 import { Fragment } from "react";
 import { useSelector } from "react-redux";
 import { Item } from "semantic-ui-react";
-import { Activity } from "../../../app/models/activity";
 import { RootState } from "../../../app/redux/rootReducer";
 import { formatDateWithoutTime } from "../../../common/helpers";
+import { Activity } from "../models";
 import { ActivityListItem } from "./ActivityListItem";
 
 export function ActivitiesList() {

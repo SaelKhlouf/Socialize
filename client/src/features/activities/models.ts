@@ -7,8 +7,3 @@ export interface Activity {
     city: string;
     venue: string;
 }
-
-export interface DataList<T> {
-    data: T[];
-    count: number;
-}

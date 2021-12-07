@@ -1,6 +1,8 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { toast } from "react-toastify";
-import { Activity, DataList } from "../models/activity";
+import { DataList } from "../../common/models";
+import { Activity } from "../../features/activities/models";
+import { LoginResult } from "../../features/users/models";
 
 axios.defaults.baseURL = "https://localhost:5001/api";
 
@@ -36,8 +38,8 @@ const responseBody = <T>(response: AxiosResponse<T>) => response.data;
 
 export const Requests = {
     get: <T>(url: string) => axios.get<T>(url).then(responseBody),
-    post: <T>(url: string, body: {}) => axios.post<T>(url, body).then(responseBody),
-    put: <T>(url: string, body: {}) => axios.put<T>(url, body).then(responseBody),
+    post: <T>(url: string, body?: {}) => axios.post<T>(url, body).then(responseBody),
+    put: <T>(url: string, body?: {}) => axios.put<T>(url, body).then(responseBody),
     delete: <T>(url: string) => axios.delete<T>(url).then(responseBody),
 }
 
@@ -45,8 +47,15 @@ export const ActivitiesApis = {
     list: () => Requests.get<DataList<Activity>>("/Activities"),
     details: (id: string) => Requests.get<Activity>(`/Activities/${id}`),
     create: (body: {}) => Requests.post<Activity>("/Activities", body),
-    update: (id: string, body: {}) => Requests.put<Activity>(`/Activities/${id}`, body),
-    delete: (id: string) => Requests.delete<void>(`/Activities/${id}`),
+    update: ({id, body}: {id: string, body: {}}) => Requests.put<Activity>(`/Activities/${id}`, body),
+    delete: async (id: string) => {
+        await Requests.delete<void>(`/Activities/${id}`)
+        return id;
+    },
+}
+
+export const UsersApis = {
+    login: (body: {}) => Requests.post<LoginResult>("/Account/login", body),
 }
 
 //Sleep is to simulate real requests, so that we wait some seconds to the request to finish..

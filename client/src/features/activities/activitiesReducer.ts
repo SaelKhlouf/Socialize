@@ -1,8 +1,8 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import { ActivitiesApis } from '../../app/api/agent'
-import { Activity } from '../../app/models/activity'
+import { Activity } from './models';
 
-export type activitiesState = {
+export type ActivitiesState = {
     activitiesRegistry: {[key: string]: Activity};
     loading: boolean;
     submitting: boolean;
@@ -11,7 +11,7 @@ export type activitiesState = {
     validationErrors: string[];
 }
 
-const initialState : activitiesState = {
+const initialState : ActivitiesState = {
     activitiesRegistry: {},
     loading: false,
     submitting: false,
@@ -20,36 +20,11 @@ const initialState : activitiesState = {
     validationErrors: []
 }
 
-export const getActivities = createAsyncThunk(
-  'activities/getActivities',
-  async () => {
-    return await ActivitiesApis.list();
-});
-
-export const getActivity = createAsyncThunk(
-  'activities/getActivity',
-  async (id: string) => {
-    return await ActivitiesApis.details(id);
-});
-
-export const deleteActivity = createAsyncThunk(
-    'activities/deleteActivity',
-    async (id: string) => {
-      await ActivitiesApis.delete(id);
-      return id;
-});
-
-export const createActivity = createAsyncThunk(
-    'activities/createActivity',
-    async (activity : Activity) => {
-      return await ActivitiesApis.create(activity);
-});
-
-export const updateActivity = createAsyncThunk(
-    'activities/updateActivity',
-    async (activity : Activity) => {
-      return await ActivitiesApis.update(activity.id, activity);
-});
+export const getActivities = createAsyncThunk('activities/getActivities', ActivitiesApis.list);
+export const getActivity = createAsyncThunk('activities/getActivity', ActivitiesApis.details);
+export const deleteActivity = createAsyncThunk('activities/deleteActivity', ActivitiesApis.delete);
+export const createActivity = createAsyncThunk('activities/createActivity', ActivitiesApis.create);
+export const updateActivity = createAsyncThunk('activities/updateActivity', ActivitiesApis.update);
 
 const activitiesSlice = createSlice({
   name: 'activities',

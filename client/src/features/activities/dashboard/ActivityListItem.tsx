@@ -4,8 +4,8 @@ import { getActivity, setActivityReducer } from "../activitiesReducer";
 import { AppDispatch } from "../../../app/redux/store";
 import { RootState } from "../../../app/redux/rootReducer";
 import { NavLink } from "react-router-dom";
-import { Activity } from "../../../app/models/activity";
 import { formatDateWithoutTime } from "../../../common/helpers";
+import { Activity } from "../models";
 
 interface ActivityListItemProps{
     activity: Activity;
