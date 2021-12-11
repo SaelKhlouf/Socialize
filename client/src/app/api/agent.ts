@@ -1,37 +1,48 @@
-import axios, { AxiosError, AxiosResponse } from "axios";
-import { toast } from "react-toastify";
+import axios, { AxiosResponse } from "axios";
+import { LOCAL_STORAGE_KEYS } from "../../common/constants";
 import { DataList } from "../../common/models";
 import { Activity } from "../../features/activities/models";
-import { LoginResult } from "../../features/users/models";
+import { User, UserLoginResult } from "../../features/users/models";
 
 axios.defaults.baseURL = "https://localhost:5001/api";
 
-axios.interceptors.response.use(async response => {
+axios.interceptors.request.use(async (request) => {
+    const jwt = window.localStorage.getItem(LOCAL_STORAGE_KEYS.JWT);
+    request.headers['authorization'] = `Bearer ${jwt}`;
+    return request;
+});
+
+//First parameter is when success, second is when fail (error thrown)
+axios.interceptors.response.use(async (response) => {
     await sleep(1000);
     return response;
-}, async (error: AxiosError) => {
-    const status = error.response?.status!;
 
-    switch(status){
-        case 500:
-            toast.error('Internal server error.');
-            break;
-        case 400:
-            if(error.response?.data.errors){
-                toast.error('Validation errors.');
-            } else {
-                toast.error('Bad request error.');
-            }
-            break;
-        case 401:
-            toast.error('Authentication error.');
-            break;
-        case 404:
-            toast.error('Not found.');
-            break;
-    }
 
-    return Promise.reject(error);
+// , async (error: AxiosError) => {
+//     const status = error.response?.status!;
+
+//     switch(status){
+//         case 500:
+//             toast.error('Internal server error.');
+//             break;
+//         case 400:
+//             if(error.response?.data.errors){
+//                 toast.error('Validation errors.');
+//             } else {
+//                 toast.error('Bad request error.');
+//             }
+//             break;
+//         case 401:
+//             toast.error('Authentication error.');
+//             break;
+//         case 404:
+//             toast.error('Not found.');
+//             break;
+//     }
+
+//     return Promise.reject(error);
+
+
 });
 
 const responseBody = <T>(response: AxiosResponse<T>) => response.data;
@@ -55,7 +66,8 @@ export const ActivitiesApis = {
 }
 
 export const UsersApis = {
-    login: (body: {}) => Requests.post<LoginResult>("/Account/login", body),
+    login: (body: {}) => Requests.post<UserLoginResult>("/Account/login", body),
+    register: (body: {}) => Requests.post<User>("/Account/register", body),
 }
 
 //Sleep is to simulate real requests, so that we wait some seconds to the request to finish..

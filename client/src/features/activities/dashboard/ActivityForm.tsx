@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {Button, Header, Segment} from "semantic-ui-react";
-import { createActivity, getActivity, updateActivity } from "../activitiesReducer";
+import { createActivity, getActivity, updateActivity } from "../reducer";
 import { AppDispatch } from "../../../app/redux/store";
 import { RootState } from "../../../app/redux/rootReducer";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
@@ -67,7 +67,7 @@ export default function ActivityForm() {
         title: '',
         description: '',
         category: '',
-        date: null,
+        date: new Date(),
         city: '',
         venue: ''
     };

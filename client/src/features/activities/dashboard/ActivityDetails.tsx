@@ -1,7 +1,7 @@
 import {Button, Card, Container, Form, Grid, GridColumn, Icon, Image, Segment, TextArea} from "semantic-ui-react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../../../app/redux/store";
-import { getActivity, setActivityCommentReducer } from "../activitiesReducer";
+import { getActivity, setActivityCommentReducer } from "../reducer";
 import { RootState } from "../../../app/redux/rootReducer";
 import { NavLink, useParams } from "react-router-dom";
 import { useEffect } from "react";
@@ -49,7 +49,7 @@ export default function ActivityDetails() {
                         }}>
                             <Card.Header style={{color: 'white', fontSize: '2em'}}> <p>{activity?.title}</p> </Card.Header>
                             <Card.Meta>
-                                <p style={{color: 'white', fontSize: '1.0em', opacity: '80%'}}> {activity && activity.date && formatDateWithoutTime(activity.date!)} </p>
+                                <p style={{color: 'white', fontSize: '1.0em', opacity: '80%'}}> {activity && activity.date && formatDateWithoutTime(activity.date)} </p>
                             </Card.Meta>
                             <Card.Description style={{color: 'white', marginTop: '0.6em', fontSize: '1.0em'}}>
                                 <p> Hosted by <span style={{fontWeight: 'bold'}}> Sael </span> </p>
@@ -80,7 +80,7 @@ export default function ActivityDetails() {
 
                     <Segment>
                         <Icon name='calendar' color='teal' /> 
-                        <span style={{marginLeft:'1em'}}> {activity && activity.date && formatDateWithoutTime(activity.date!)} </span>
+                        <span style={{marginLeft:'1em'}}> {activity && activity.date && formatDateWithoutTime(activity.date)} </span>
                     </Segment>
 
                     <Segment>

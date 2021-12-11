@@ -8,3 +8,7 @@ export const ACTIVITY_CATEGORIES = [
   ]
 
 export const DATE_FORMAT_WITHOUT_TIME = 'dd MMM yyyy';
+
+export const LOCAL_STORAGE_KEYS = {
+  JWT: 'jwt'
+}

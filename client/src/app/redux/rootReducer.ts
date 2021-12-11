@@ -1,7 +1,7 @@
 import { combineReducers } from "@reduxjs/toolkit";
-import { commonReducer } from "../../common/commonReducer";
-import { activitiesReducer } from "../../features/activities/activitiesReducer";
-import { usersReducer } from "../../features/users/usersReducer";
+import { commonReducer } from "../../common/reducer";
+import { activitiesReducer } from "../../features/activities/reducer";
+import { usersReducer } from "../../features/users/reducer";
 
 const rootReducer = combineReducers({
     activities: activitiesReducer,

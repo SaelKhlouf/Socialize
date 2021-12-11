@@ -8,10 +8,23 @@ import HomePageComponent from "./homepage";
 import { NotFound } from "../../features/errors/NotFound";
 import { ToastContainer } from "react-toastify";
 import { ErrorsTests } from "../../features/errors/ErrorsTests";
-import { Login } from "../../features/users/login";
 import NavBar from "./navbar";
+import { LOCAL_STORAGE_KEYS } from "../../common/constants";
+import jwtDecode from "jwt-decode";
+import { User } from "../../features/users/models";
+import { AppDispatch } from "../redux/store";
+import { useDispatch } from "react-redux";
+import { loginReducer } from "../../features/users/reducer";
 
 function App() {
+    const dispatch = useDispatch<AppDispatch>();
+    
+    const jwt = window.localStorage.getItem(LOCAL_STORAGE_KEYS.JWT);
+    if(jwt){
+        const currentUser = jwtDecode<User>(jwt);
+        dispatch(loginReducer(currentUser));
+    }
+
     return (
         <Fragment>
             <ToastContainer position="top-center"/>
@@ -32,18 +45,6 @@ function App() {
                                 <Route path="create" element={<ActivityForm />} />
                                 <Route path=":id" element={<ActivityDetails />} />
                                 <Route path=":id/edit" element={<ActivityForm />} />
-                                <Route path="*" element={<NotFound />} />
-                            </Routes>
-                        </Fragment>
-                        </Container>
-                    } />
-
-                    <Route path="users/*" element={
-                        <Container style={{marginTop: '6em'}}>
-                        <Fragment>   
-                            <NavBar/>
-                            <Routes>
-                                <Route path="login" element={ <Login />} />
                                 <Route path="*" element={<NotFound />} />
                             </Routes>
                         </Fragment>

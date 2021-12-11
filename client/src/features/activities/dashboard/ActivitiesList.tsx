@@ -13,13 +13,12 @@ export function ActivitiesList() {
     const activitiesGroupedByDate = (activitiesRegistry: {[key: string]: Activity}) => {
         const activities = Object.values(activitiesRegistry);
 
-
-        const sortedActivities = activities.sort((a,b) => differenceInDays(b.date!, a.date!));
+        const sortedActivities = activities.sort((a,b) => differenceInDays(new Date(b.date), new Date(a.date)));
         const groupedActivities : {[key: string]: Activity[]} = {};
 
         sortedActivities.forEach(activity => {
             if(activity.date){
-                const formattedDateWithoutTime = formatDateWithoutTime(activity.date!);
+                const formattedDateWithoutTime = formatDateWithoutTime(activity.date);
                 if(!groupedActivities[formattedDateWithoutTime]){
                     groupedActivities[formattedDateWithoutTime] = [];
                 }
@@ -39,7 +38,7 @@ export function ActivitiesList() {
                             let formattedDateWithoutTime;
 
                             if(date){
-                                formattedDateWithoutTime = formatDateWithoutTime(date!);
+                                formattedDateWithoutTime = formatDateWithoutTime(date);
                             }
                             return(
                                 <Fragment key={formattedDateWithoutTime}>

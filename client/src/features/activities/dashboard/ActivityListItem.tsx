@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import {Button, Icon, Item, Label, Segment} from "semantic-ui-react";
-import { getActivity, setActivityReducer } from "../activitiesReducer";
+import { getActivity, setActivityReducer } from "../reducer";
 import { AppDispatch } from "../../../app/redux/store";
 import { RootState } from "../../../app/redux/rootReducer";
 import { NavLink } from "react-router-dom";
@@ -41,7 +41,7 @@ export function ActivityListItem({activity}: ActivityListItemProps) {
 
             <Segment>
                 <Icon name="clock"/>
-                    {activity.date && formatDateWithoutTime(activity.date!) }
+                    {activity.date && formatDateWithoutTime(activity.date) }
                 <Icon name="location arrow"/>
                 {activity.city}
             </Segment>

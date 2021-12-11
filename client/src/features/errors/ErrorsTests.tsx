@@ -6,7 +6,7 @@ import { Requests } from "../../app/api/agent";
 import NavBar from "../../app/layout/navbar";
 import { RootState } from "../../app/redux/rootReducer";
 import { AppDispatch } from "../../app/redux/store";
-import { setValidationErrorsReducer } from "../activities/activitiesReducer";
+import { setValidationErrorsReducer } from "../activities/reducer";
 
 export function ErrorsTests(){
     let navigate = useNavigate();

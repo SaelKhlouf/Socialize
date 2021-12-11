@@ -1,5 +1,5 @@
 import { useField } from 'formik';
-import { Form, Label } from 'semantic-ui-react';
+import { Form, Label, SemanticWIDTHS } from 'semantic-ui-react';
 
  interface Props {
      name: string;
@@ -7,6 +7,7 @@ import { Form, Label } from 'semantic-ui-react';
      placeholder?: string;
      value?: string;
      type?: string;
+     width?: SemanticWIDTHS;
 }
 
 export function CustomTextInput({label, ...props} : Props){

@@ -1,4 +1,4 @@
-export interface LoginResult {
+export interface UserLoginResult {
     token: string;
 }
 
@@ -7,8 +7,16 @@ export interface UserLoginRequest {
     password: string;
 }
 
+export interface UserRegisterRequest {
+    userName: string;
+    displayName: string;
+    email: string;
+    password: string;
+}
+
 export interface User {
-    username: string;
+    id: string;
+    userName: string;
     displayName: string;
     email: string;
 }
