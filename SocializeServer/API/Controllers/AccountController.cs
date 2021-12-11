@@ -38,13 +38,13 @@ namespace API.Controllers
             var user = await _userManager.FindByEmailAsync(userLoginRequest.Email);
             if (user == null)
             {
-                throw new BadHttpRequestException("Email is already taken");
+                throw new BadHttpRequestException("Email not found");
             }
 
             var signInResult = await _signInManager.CheckPasswordSignInAsync(user, userLoginRequest.Password, false);
             if (!signInResult.Succeeded)
             {
-                throw new BadHttpRequestException("Password entered is wrong");
+                throw new BadHttpRequestException("Wrong password");
             }
 
             var token = _tokenService.CreateToken(user);
@@ -59,13 +59,13 @@ namespace API.Controllers
         [Route("register")]
         public async Task<IActionResult> Register(UserRegisterRequest userRegisterRequest)
         {
-            var userNameExists = await _userManager.Users.AnyAsync(p => p.UserName.Equals(userRegisterRequest.Username));
+            var userNameExists = await _userManager.Users.AnyAsync(p => p.UserName.Equals(userRegisterRequest.Username, StringComparison.OrdinalIgnoreCase));
             if (userNameExists)
             {
                 throw new BadHttpRequestException("Username is already taken");
             }
 
-            var emailExists = await _userManager.Users.AnyAsync(p => p.Email.Equals(userRegisterRequest.Email));
+            var emailExists = await _userManager.Users.AnyAsync(p => p.Email.Equals(userRegisterRequest.Email, StringComparison.OrdinalIgnoreCase));
             if (emailExists)
             {
                 throw new BadHttpRequestException("Email is already taken");
@@ -73,8 +73,8 @@ namespace API.Controllers
 
             var user = new AppUser
             {
-                UserName = userRegisterRequest.Username,
-                Email = userRegisterRequest.Email,
+                UserName = userRegisterRequest.Username.ToLower(),
+                Email = userRegisterRequest.Email.ToLower(),
                 DisplayName = userRegisterRequest.Displayname,
             };
             var result = await _userManager.CreateAsync(user, userRegisterRequest.Password);
