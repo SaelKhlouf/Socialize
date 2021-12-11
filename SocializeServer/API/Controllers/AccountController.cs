@@ -38,13 +38,13 @@ namespace API.Controllers
             var user = await _userManager.FindByEmailAsync(userLoginRequest.Email);
             if (user == null)
             {
-                return Unauthorized();
+                throw new BadHttpRequestException("Email is already taken");
             }
 
             var signInResult = await _signInManager.CheckPasswordSignInAsync(user, userLoginRequest.Password, false);
             if (!signInResult.Succeeded)
             {
-                return Unauthorized();
+                throw new BadHttpRequestException("Password entered is wrong");
             }
 
             var token = _tokenService.CreateToken(user);
@@ -55,7 +55,7 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(UserDto), StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(UserDto), StatusCodes.Status201Created)]
         [Route("register")]
         public async Task<IActionResult> Register(UserRegisterRequest userRegisterRequest)
         {
@@ -71,15 +71,19 @@ namespace API.Controllers
                 throw new BadHttpRequestException("Email is already taken");
             }
 
-            await _userManager.CreateAsync(
-                new AppUser
-                {
-                    UserName = userRegisterRequest.Username,
-                    Email = userRegisterRequest.Email,
-                    DisplayName = userRegisterRequest.Displayname,
-                }, userRegisterRequest.Password);
+            var user = new AppUser
+            {
+                UserName = userRegisterRequest.Username,
+                Email = userRegisterRequest.Email,
+                DisplayName = userRegisterRequest.Displayname,
+            };
+            var result = await _userManager.CreateAsync(user, userRegisterRequest.Password);
 
-            return NoContent();
+            if (!result.Succeeded)
+            {
+                throw new Exception("Errors while creating user: " + result.Errors);
+            }
+            return Created("", _mapper.Map<UserDto>(user));
         }
     }
 }

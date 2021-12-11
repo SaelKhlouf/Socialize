@@ -11,6 +11,7 @@ namespace Domain.Core
             CreateMap<ActivityRequest, Activity>();
             CreateMap<Activity, ActivityDto>().ReverseMap();
             CreateMap<AppUser, LoginDto>();
+            CreateMap<AppUser, UserDto>();
             CreateMap<DataList<Activity>, DataList<ActivityDto>>().ReverseMap();
         }
     }

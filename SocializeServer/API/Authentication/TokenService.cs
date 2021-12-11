@@ -24,9 +24,10 @@ namespace API.Authentication
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, user.Id),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Name, user.UserName)
+                new Claim("id", user.Id),
+                new Claim("email", user.Email),
+                new Claim("userName", user.UserName),
+                new Claim("displayName", user.DisplayName),
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JwtKey"]));
