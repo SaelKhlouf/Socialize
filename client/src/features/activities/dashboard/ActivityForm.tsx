@@ -62,7 +62,7 @@ export default function ActivityForm() {
         }
     }, [dispatch, params.id, activity]);
 
-    const initialActivityValues = {
+    const initialActivityValues: Activity = {
         id: '',
         title: '',
         description: '',

@@ -1,11 +1,11 @@
 import { useDispatch, useSelector } from "react-redux";
-import {Button, Icon, Item, Label, Segment} from "semantic-ui-react";
+import {Button, Header, Icon, Item, Label, List, Segment} from "semantic-ui-react";
 import { getActivity, setActivityReducer } from "../reducer";
 import { AppDispatch } from "../../../app/redux/store";
 import { RootState } from "../../../app/redux/rootReducer";
 import { NavLink } from "react-router-dom";
 import { formatDateWithoutTime } from "../../../common/helpers";
-import { Activity } from "../models";
+import { Activity, ActivityStatus } from "../models";
 
 interface ActivityListItemProps{
     activity: Activity;
@@ -14,7 +14,8 @@ interface ActivityListItemProps{
 export function ActivityListItem({activity}: ActivityListItemProps) {
     const dispatch = useDispatch<AppDispatch>();
 
-    const activitiesRegistry = useSelector((state: RootState) => state.activities.activitiesRegistry);
+    const {activitiesRegistry} = useSelector((state: RootState) => state.activities);
+    const {currentUser} = useSelector((state: RootState) => state.users);
 
     const handleSelectActivity = (id: string) => {
         const activityInMemory = activitiesRegistry[id];
@@ -25,8 +26,27 @@ export function ActivityListItem({activity}: ActivityListItemProps) {
         }
     }
 
+    const isHost = () => activity.host?.id === currentUser?.id;
+    const isAttending = () => activity.users?.some(p => p.id === currentUser?.id) === true ? true : false;
+
+    let currentUserStatus = null;
+    if(isHost()){
+        currentUserStatus = 'host';
+    } else if(isAttending()){
+        currentUserStatus = 'going';
+    }
+
     return (
         <Segment.Group>
+            {
+                activity.status === ActivityStatus.Cancelled &&
+                (
+                    <Segment style={{backgroundColor: 'red', textAlign: 'center'}}>
+                        <Header as='h3' inverted> Cancelled </Header>
+                    </Segment>
+                )
+            }
+
             <Segment>
                 <Item.Group>
                     <Item>
@@ -34,6 +54,19 @@ export function ActivityListItem({activity}: ActivityListItemProps) {
                         <Item.Content>
                             <Item.Header as='h2'>{activity.title}</Item.Header>
                             <Item.Meta>Hosted by Sael</Item.Meta>
+                            {
+                                currentUserStatus != null &&
+                                (
+                                    <Item.Meta>
+                                        {
+                                            currentUserStatus === 'host' ?
+                                            (<Label basic color='orange'> You are hosting this activity </Label>)
+                                            :
+                                            (<Label basic color='blue'> You are going to this activity </Label>)
+                                        }
+                                    </Item.Meta>
+                                )
+                            }
                         </Item.Content>
                     </Item>
                 </Item.Group>
@@ -47,7 +80,11 @@ export function ActivityListItem({activity}: ActivityListItemProps) {
             </Segment>
 
             <Segment>
-                Attendees goes here
+                <List horizontal>
+                    <List.Item>
+                        <Item.Image src={`/assets/user.png`} size='mini' circular inline/>
+                    </List.Item>
+                </List>
             </Segment>
 
             <Segment clearing>
