@@ -51,6 +51,8 @@ namespace API
             services.AddIdentityServices(_config);
             services.AddHttpContextAccessor();
 
+            services.AddRequirementsServices(_config);
+
             services.Configure<ApiBehaviorOptions>(options =>
             {
                 options.SuppressModelStateInvalidFilter = true;

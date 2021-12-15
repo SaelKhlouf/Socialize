@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Linq;
+using AutoMapper;
 using Domain.Activities;
 using Domain.Users;
 
@@ -9,10 +10,16 @@ namespace Domain.Core
         public MappingProfiles()
         {
             CreateMap<ActivityRequest, Activity>();
-            CreateMap<Activity, ActivityDto>().ReverseMap();
-            CreateMap<AppUser, LoginDto>();
+
             CreateMap<AppUser, UserDto>();
-            CreateMap<DataList<Activity>, DataList<ActivityDto>>().ReverseMap();
+
+            CreateMap<AppUser, LoginDto>();
+
+            CreateMap<Activity, ActivityDto>()
+                .ForMember(dest => dest.Host, opt => opt.MapFrom(src => src.Host))
+                .ForMember(dest => dest.Users, opt => opt.MapFrom(src => src.ActivityAttendees.Select(x => x.User)));
+
+            CreateMap<DataList<Activity>, DataList<ActivityDto>>();
         }
     }
 }

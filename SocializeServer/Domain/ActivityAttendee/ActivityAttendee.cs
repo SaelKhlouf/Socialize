@@ -10,7 +10,7 @@ namespace Domain.ActivityAttendee
 {
     public class ActivityAttendee
     {
-        public string AppUserId { get; set; }
+        public Guid AppUserId { get; set; }
         public AppUser User { get; set; }
 
         public Guid ActivityId { get; set; }

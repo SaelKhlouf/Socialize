@@ -59,13 +59,13 @@ namespace API.Controllers
         [Route("register")]
         public async Task<IActionResult> Register(UserRegisterRequest userRegisterRequest)
         {
-            var userNameExists = await _userManager.Users.AnyAsync(p => p.UserName.Equals(userRegisterRequest.Username, StringComparison.OrdinalIgnoreCase));
+            var userNameExists = await _userManager.Users.AnyAsync(p => p.UserName.ToLower().Equals(userRegisterRequest.Username.ToLower()));
             if (userNameExists)
             {
                 throw new BadHttpRequestException("Username is already taken");
             }
 
-            var emailExists = await _userManager.Users.AnyAsync(p => p.Email.Equals(userRegisterRequest.Email, StringComparison.OrdinalIgnoreCase));
+            var emailExists = await _userManager.Users.AnyAsync(p => p.Email.ToLower().Equals(userRegisterRequest.Email.ToLower()));
             if (emailExists)
             {
                 throw new BadHttpRequestException("Email is already taken");

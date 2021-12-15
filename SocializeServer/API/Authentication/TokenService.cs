@@ -24,7 +24,7 @@ namespace API.Authentication
         {
             var claims = new List<Claim>
             {
-                new Claim("id", user.Id),
+                new Claim("id", user.Id.ToString()),
                 new Claim("email", user.Email),
                 new Claim("userName", user.UserName),
                 new Claim("displayName", user.DisplayName),

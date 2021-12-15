@@ -19,6 +19,11 @@ namespace Persistence.Repositories
         {
             var query = _context.Set<Activity>().AsQueryable();
 
+            query = query
+                .Include(p => p.Host)
+                .Include(p => p.ActivityAttendees)
+                    .ThenInclude(x => x.User);
+
             var count = await query
                 .AsNoTracking()
                 .CountAsync();
@@ -38,10 +43,28 @@ namespace Persistence.Repositories
 
         public async Task<Activity> GetByIdAsync(Guid id)
         {
+            var query = _context
+                .Activities
+                .Include(p => p.Host)
+                .Include(p => p.ActivityAttendees)
+                    .ThenInclude(x => x.User);
+
+            return await query.AsNoTracking()
+                .FirstOrDefaultAsync(p => p.Id.Equals(id));
+        }
+
+        public async Task<bool> UserAttendsActivity(Guid userId, Guid activityId)
+        {
             return await _context
                 .Activities
                 .AsNoTracking()
-                .FirstOrDefaultAsync(p => p.Id.Equals(id));
+                .AnyAsync(p => p.Id == activityId && p.ActivityAttendees.Any(x => x.AppUserId == userId));
         }
+
+        public async Task<bool> IsActivityHostedByUser(Guid userId, Guid activityId)
+        {
+            return await _context.Activities.AnyAsync(p => p.Id == activityId && p.HostId == userId);
+        }
+
     }
 }

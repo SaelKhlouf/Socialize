@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Domain.Users;
 
 namespace Domain.Activities
 {
@@ -15,5 +16,9 @@ namespace Domain.Activities
         public string Category { get; set; }
         public string City { get; set; }
         public string Venue { get; set; }
+        public Enums.ActivityState Status { get; set; }
+
+        public UserDto Host { get; set; }
+        public UserDto[] Users { get; set; }
     }
 }

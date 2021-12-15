@@ -11,6 +11,8 @@ using API.Filters;
 using AutoMapper;
 using Domain.Activities;
 using Domain.Core;
+using Domain.Core.UserAccessor;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers
@@ -46,7 +48,6 @@ namespace API.Controllers
 
         [HttpPost]
         [ProducesResponseType(typeof(ActivityDto), StatusCodes.Status201Created)]
-        //[Authorize]
         public async Task<IActionResult> Post(ActivityRequest activity)
         {
             var response = await _activitiesService.PostAsync(activity);
@@ -56,7 +57,7 @@ namespace API.Controllers
 
         [HttpPut("{id}")]
         [ProducesResponseType(typeof(ActivityDto), StatusCodes.Status200OK)]
-        [Authorize]
+        [Authorize(Policy = "IsHost")]
         public async Task<IActionResult> Update(Guid id, [FromBody] ActivityRequest activity)
         {
             var response = await _activitiesService.UpdateAsync(id, activity);
@@ -65,10 +66,28 @@ namespace API.Controllers
 
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [Authorize]
+        [Authorize(Policy = "IsHost")]
         public async Task<IActionResult> DeleteActivityById(Guid id)
         {
             await _activitiesService.DeleteAsync(id);
+            return NoContent();
+        }
+
+        [HttpPost("{id}/attend")]
+        [ProducesResponseType(typeof(ActivityDto), StatusCodes.Status204NoContent)]
+        [Authorize]
+        public async Task<IActionResult> AttendActivity(Guid id)
+        {
+            await _activitiesService.AttendActivity(id);
+            return NoContent();
+        }
+
+        [HttpPost("{id}/cancel")]
+        [ProducesResponseType(typeof(ActivityDto), StatusCodes.Status204NoContent)]
+        [Authorize(Policy = "IsHost")]
+        public async Task<IActionResult> CancelActivity(Guid id)
+        {
+            await _activitiesService.CancelActivity(id);
             return NoContent();
         }
     }

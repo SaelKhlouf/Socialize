@@ -8,11 +8,10 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Domain.Users
 {
-    public class AppUser : IdentityUser
+    public class AppUser : IdentityUser<Guid>
     {
         public string DisplayName { get; set; }
         public string Bio { get; set; }
-        public ICollection<Activity> Activities { get; set; }
-        public List<ActivityAttendee.ActivityAttendee> ActivityAttendees { get; set; }
+        public ICollection<ActivityAttendee.ActivityAttendee> ActivityAttendees { get; set; }
     }
 }
