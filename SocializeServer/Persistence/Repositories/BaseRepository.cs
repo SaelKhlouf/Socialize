@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Persistence.Repositories
 {
-    public class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
+    public class BaseRepository<T> : IBaseRepository<T> where T : TrackingEntity
     {
         protected readonly ApplicationDbContext _context;
         public BaseRepository(ApplicationDbContext dbContext)

@@ -22,6 +22,7 @@ namespace API.Extensions
             });
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(config.GetConnectionString("SocializeDb")).ConfigureWarnings(p => p.Ignore(CoreEventId.RowLimitingOperationWithoutOrderByWarning)));
             services.AddScoped<ActivitiesRepository>();
+            services.AddScoped<ActivitiesAttendeesRepository>();
             services.AddScoped<ActivitiesService>();
             services.AddAutoMapper(typeof(MappingProfiles).Assembly);
         }

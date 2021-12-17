@@ -9,6 +9,10 @@ namespace Domain.Core
     public class BaseEntity
     {
         public Guid Id { get; set; }
+    }
+
+    public class TrackingEntity
+    {
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
     }

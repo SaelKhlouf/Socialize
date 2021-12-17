@@ -6,8 +6,9 @@ using Domain.Users;
 
 namespace Domain.Activities
 {
-    public class Activity : BaseEntity
+    public class Activity : TrackingEntity
     {
+        public Guid Id { get; set; }
         public string Title { get; set; }
         public DateTime Date { get; set; }
         public string Description { get; set; }

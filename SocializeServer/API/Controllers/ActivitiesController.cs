@@ -54,7 +54,6 @@ namespace API.Controllers
             return CreatedAtAction(nameof(GetActivityById), new { id = response.Id }, _mapper.Map<ActivityDto>(response));
         }
 
-
         [HttpPut("{id}")]
         [ProducesResponseType(typeof(ActivityDto), StatusCodes.Status200OK)]
         [Authorize(Policy = "IsHost")]
@@ -79,6 +78,15 @@ namespace API.Controllers
         public async Task<IActionResult> AttendActivity(Guid id)
         {
             await _activitiesService.AttendActivity(id);
+            return NoContent();
+        }
+
+        [HttpPost("{id}/un-attend")]
+        [ProducesResponseType(typeof(ActivityDto), StatusCodes.Status204NoContent)]
+        [Authorize]
+        public async Task<IActionResult> CancelActivityAttendance(Guid id)
+        {
+            await _activitiesService.CancelActivityAttendance(id);
             return NoContent();
         }
 

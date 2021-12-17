@@ -20,12 +20,14 @@ namespace Application.Services
     public class ActivitiesService
     {
         private readonly ActivitiesRepository _activitiesRepository;
+        private readonly ActivitiesAttendeesRepository _activitiesAttendeesRepository;
         private readonly IMapper _mapper;
         private readonly IUserAccessor _userAccessor;
 
-        public ActivitiesService(ActivitiesRepository activitiesRepository, IMapper mapper, IUserAccessor userAccessor)
+        public ActivitiesService(ActivitiesRepository activitiesRepository, ActivitiesAttendeesRepository activitiesAttendeesRepository, IMapper mapper, IUserAccessor userAccessor)
         {
             _activitiesRepository = activitiesRepository;
+            _activitiesAttendeesRepository = activitiesAttendeesRepository;
             _mapper = mapper;
             _userAccessor = userAccessor;
         }
@@ -65,8 +67,15 @@ namespace Application.Services
 
         public async Task<Activity> UpdateAsync(Guid id, ActivityRequest activityRequest)
         {
-            Activity activity = _mapper.Map<Activity>(activityRequest);
-            activity.Id = id;
+            var activity = await GetByIdAsync(id);
+
+            activity.Title = activityRequest.Title;
+            activity.Date = activityRequest.Date;
+            activity.Description = activityRequest.Description;
+            activity.Category = activityRequest.Category;
+            activity.City = activityRequest.City;
+            activity.Venue = activityRequest.Venue;
+
             return await _activitiesRepository.UpdateAsync(activity);
         }
 
@@ -91,6 +100,20 @@ namespace Application.Services
                 AppUserId = currentUser.Id
             });
             await _activitiesRepository.UpdateAsync(activity);
+        }
+
+        public async Task CancelActivityAttendance(Guid id)
+        {
+            var currentUser = _userAccessor.GetCurrentUser();
+            var activity = await GetByIdAsync(id);
+            var userAttendsActivity = await _activitiesRepository.UserAttendsActivity(currentUser.Id, id);
+            if (!userAttendsActivity)
+            {
+                throw new BadHttpRequestException("You are not attending to this activity");
+            }
+
+            var activityAttendee = activity.ActivityAttendees.FirstOrDefault(p => p.ActivityId == id && p.AppUserId == currentUser.Id);
+            await _activitiesAttendeesRepository.DeleteAsync(activityAttendee);
         }
 
         public async Task CancelActivity(Guid id)
