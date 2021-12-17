@@ -1,14 +1,19 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import jwtDecode from 'jwt-decode';
 import { UsersApis } from '../../app/api/agent';
+import { decodeJwtAsUser } from '../../common/helpers';
 import { UserLoginResult, User, UserLoginRequest, UserRegisterRequest } from './models';
 
 export type UsersState = {
-  currentUser: User | null; 
+  currentUser: User; 
 };
 
 const initialState : UsersState = {
-  currentUser: null,
+  currentUser: {
+    id: '',
+    userName: '',
+    displayName: '',
+    email: '',
+  },
 };
 
 export const login = createAsyncThunk<UserLoginResult, UserLoginRequest, {rejectValue: any}>(
@@ -37,7 +42,7 @@ const usersSlice = createSlice({
   // add your non-async reducers here
   reducers: {
     logoutReducer: (state) => {
-      state.currentUser = null;
+      state = initialState;
       return state;
     },
     loginReducer: (state, action: PayloadAction<User>) => {
@@ -50,7 +55,7 @@ const usersSlice = createSlice({
     builder
     .addCase(login.fulfilled, (state, action) => {
         const {token} = action.payload;
-        state.currentUser = jwtDecode<User>(token);
+        state.currentUser = decodeJwtAsUser(token);
         return state;
     });
   }

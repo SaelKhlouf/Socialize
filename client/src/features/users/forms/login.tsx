@@ -7,11 +7,11 @@ import { RootState } from "../../../app/redux/rootReducer";
 import { AppDispatch } from "../../../app/redux/store";
 import { setModalInfoReducer, setSubmittingReducer } from "../../../common/reducer";
 import { CustomTextInput } from "../../../common/form/CustomTextInput";
-import { User, UserLoginRequest } from "../models";
+import { UserLoginRequest } from "../models";
 import { login, loginReducer } from "../reducer";
 import ErrorContainer from "../../../common/Containers/ErrorContainer";
 import { LOCAL_STORAGE_KEYS } from "../../../common/constants";
-import jwtDecode from "jwt-decode";
+import { decodeJwtAsUser } from "../../../common/helpers";
 
 export function Login(){
     const dispatch = useDispatch<AppDispatch>();
@@ -39,7 +39,7 @@ export function Login(){
             const data = await dispatch(login(values)).unwrap(); //if error happened in the thunk, then the code below will not execute
 
             window.localStorage.setItem(LOCAL_STORAGE_KEYS.JWT, data.token);
-            const user = jwtDecode<User>(data.token);
+            const user = decodeJwtAsUser(data.token);
             dispatch(loginReducer(user));
 
             dispatch(setSubmittingReducer(false));

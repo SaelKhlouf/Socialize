@@ -10,18 +10,17 @@ import { ToastContainer } from "react-toastify";
 import { ErrorsTests } from "../../features/errors/ErrorsTests";
 import NavBar from "./navbar";
 import { LOCAL_STORAGE_KEYS } from "../../common/constants";
-import jwtDecode from "jwt-decode";
-import { User } from "../../features/users/models";
 import { AppDispatch } from "../redux/store";
 import { useDispatch } from "react-redux";
 import { loginReducer } from "../../features/users/reducer";
+import { decodeJwtAsUser } from "../../common/helpers";
 
 function App() {
     const dispatch = useDispatch<AppDispatch>();
     
     const jwt = window.localStorage.getItem(LOCAL_STORAGE_KEYS.JWT);
     if(jwt){
-        const currentUser = jwtDecode<User>(jwt);
+        const currentUser = decodeJwtAsUser(jwt);
         dispatch(loginReducer(currentUser));
     }
 

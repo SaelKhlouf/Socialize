@@ -1,7 +1,7 @@
 import {Button, Card, Container, Form, Grid, GridColumn, Icon, Image, Segment, TextArea} from "semantic-ui-react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../../../app/redux/store";
-import { getActivity, setActivityCommentReducer } from "../reducer";
+import { attendActivity, cancelActivityAttendance, getActivity, setActivityCommentReducer } from "../reducer";
 import { RootState } from "../../../app/redux/rootReducer";
 import { NavLink, useParams } from "react-router-dom";
 import { useEffect } from "react";
@@ -14,27 +14,48 @@ export default function ActivityDetails() {
     const dispatch = useDispatch<AppDispatch>();
     let params = useParams();
 
-    const {activity, activitiesRegistry, loading, activityComment, submitting} = useSelector((state: RootState) => state.activities);
+    const activityId = params.id;
+
+    const {activitiesRegistry, loading, activityComment, submitting} = useSelector((state: RootState) => state.activities);
+    const {currentUser} = useSelector((state: RootState) => state.users);
+
+    const activity = activitiesRegistry[activityId!];
 
     useEffect(() => {
-        if(params.id){
-            const activityInMemory = activitiesRegistry[params.id];
+        if(activityId){
+            const activityInMemory = activitiesRegistry[activityId];
             if(!activityInMemory)
             {
-                dispatch(getActivity(params.id!));
+                dispatch(getActivity(activityId));
             }
         }
-    }, [dispatch, activitiesRegistry, params.id]);
+    }, [dispatch, activitiesRegistry, activityId]);
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const {value} = event.target;
         dispatch(setActivityCommentReducer(value));
     };
 
+    const handleAttendActivity = () => {
+        if(activityId){
+            dispatch(attendActivity(activityId));
+
+        }
+    };
+
+    const handleCancelActivityAttendance = () => {
+        if(activityId){
+            dispatch(cancelActivityAttendance(activityId));
+        }
+    };
+
+    const isHost = () => activity?.host.id === currentUser.id;
+    const isAttending = () => activity?.users.some(p => p.id === currentUser.id) === true ? true : false;
+
     if(loading){
         return <LoadingComponent content={"Loading"} inverted={true} active={true}></LoadingComponent>;
     }
-    
+
     return (
     <Container>
         <Grid>
@@ -58,21 +79,26 @@ export default function ActivityDetails() {
 
                     <Card.Content extra>
                         <Card.Description>
-                            <Button color='teal'>
-                                Join activity
-                            </Button>
-                            <Button>
-                                Cancel attendance
-                            </Button>
-                            <Button color='orange' style={{float: 'right'}} as={NavLink} to={`/activities/${activity?.id}/edit`}>
-                                Manage event
-                            </Button>
+                            {
+                                isAttending() ?
+                                <Button onClick={handleCancelActivityAttendance} loading={submitting}>Cancel attendance</Button>
+                                : <Button color='teal' onClick={handleAttendActivity} loading={submitting}>Attend activity</Button>
+                            }
+                        
+                            {
+                                isHost() ?
+                                <Button color='orange' style={{float: 'right'}} as={NavLink} to={`/activities/${activity?.id}/edit`}>
+                                    Manage event
+                                </Button>
+                                : null
+                            }
+
                         </Card.Description>
                     </Card.Content>
 
                 </Card>
 
-                <Segment.Group divided>
+                <Segment.Group>
                     <Segment>
                         <Icon name='info' color='teal' /> 
                         <span style={{marginLeft:'1em'}}> {activity?.description} </span>
@@ -89,7 +115,7 @@ export default function ActivityDetails() {
                     </Segment>
                 </Segment.Group>
 
-                <Segment.Group divided>
+                <Segment.Group>
                     <Segment inverted color='teal' textAlign='center'>
                         <p color='white'> Chat about this event </p>
                     </Segment>
@@ -117,9 +143,9 @@ export default function ActivityDetails() {
             </GridColumn>
 
             <GridColumn width={6}>
-
-                <ActivityAttendanceInfo />
-
+                {activity && (
+                    <ActivityAttendanceInfo activity={activity} />
+                )}
             </GridColumn>
 
         </Grid>

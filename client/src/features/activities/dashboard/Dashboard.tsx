@@ -11,13 +11,10 @@ import { ActivitiesListFilters } from "./ActivitiesListFilters";
 export default function Dashboard() {
     const dispatch = useDispatch<AppDispatch>();
     const loading = useSelector((state: RootState) => state.activities.loading);
-    const activitiesRegistry = useSelector((state: RootState) => state.activities.activitiesRegistry);
 
     useEffect(() => {
-        if(Object.keys(activitiesRegistry).length === 0){
-            dispatch(getActivities());
-        }
-    }, [dispatch, activitiesRegistry]);
+        dispatch(getActivities());
+    }, [dispatch]);
 
     if(loading){
         return <LoadingComponent content={"Loading"} inverted={true} active={true}></LoadingComponent>;

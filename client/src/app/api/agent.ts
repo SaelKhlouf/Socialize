@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from "axios";
 import { LOCAL_STORAGE_KEYS } from "../../common/constants";
 import { DataList } from "../../common/models";
-import { Activity } from "../../features/activities/models";
+import { Activity, CreateActivityModel, EditActivityModel } from "../../features/activities/models";
 import { User, UserLoginResult } from "../../features/users/models";
 
 axios.defaults.baseURL = "https://localhost:5001/api";
@@ -57,10 +57,18 @@ export const Requests = {
 export const ActivitiesApis = {
     list: () => Requests.get<DataList<Activity>>("/Activities"),
     details: (id: string) => Requests.get<Activity>(`/Activities/${id}`),
-    create: (body: {}) => Requests.post<Activity>("/Activities", body),
-    update: ({id, body}: {id: string, body: {}}) => Requests.put<Activity>(`/Activities/${id}`, body),
+    create: (body: CreateActivityModel) => Requests.post<Activity>("/Activities", body),
+    update: (body: EditActivityModel) => Requests.put<Activity>(`/Activities/${body.id}`, body),
     delete: async (id: string) => {
-        await Requests.delete<void>(`/Activities/${id}`)
+        await Requests.delete<void>(`/Activities/${id}`);
+        return id;
+    },
+    attend: (id: string) => {
+        Requests.post<void>(`/Activities/${id}/attend`);
+        return id;
+    },
+    unattend: (id: string) => {
+        Requests.post<void>(`/Activities/${id}/un-attend`);
         return id;
     },
 }

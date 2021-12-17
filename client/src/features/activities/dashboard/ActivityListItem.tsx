@@ -1,11 +1,11 @@
 import { useDispatch, useSelector } from "react-redux";
-import {Button, Header, Icon, Item, Label, List, Segment} from "semantic-ui-react";
+import {Button, Card, Header, Icon, Item, Label, List, Popup, Segment} from "semantic-ui-react";
 import { getActivity, setActivityReducer } from "../reducer";
 import { AppDispatch } from "../../../app/redux/store";
 import { RootState } from "../../../app/redux/rootReducer";
 import { NavLink } from "react-router-dom";
 import { formatDateWithoutTime } from "../../../common/helpers";
-import { Activity, ActivityStatus } from "../models";
+import { Activity, ActivityStatus, mapEditActivityModel } from "../models";
 
 interface ActivityListItemProps{
     activity: Activity;
@@ -18,23 +18,17 @@ export function ActivityListItem({activity}: ActivityListItemProps) {
     const {currentUser} = useSelector((state: RootState) => state.users);
 
     const handleSelectActivity = (id: string) => {
-        const activityInMemory = activitiesRegistry[id];
-        if(activityInMemory){
-            dispatch(setActivityReducer(activityInMemory));
+        const activity = activitiesRegistry[id];
+        if(activity){
+            const editActivityModel = mapEditActivityModel(activity);
+            dispatch(setActivityReducer(editActivityModel));
         }else{
             dispatch(getActivity(id));
         }
     }
 
-    const isHost = () => activity.host?.id === currentUser?.id;
-    const isAttending = () => activity.users?.some(p => p.id === currentUser?.id) === true ? true : false;
-
-    let currentUserStatus = null;
-    if(isHost()){
-        currentUserStatus = 'host';
-    } else if(isAttending()){
-        currentUserStatus = 'going';
-    }
+    const isHost = () => activity.host.id === currentUser.id;
+    const isAttending = () => activity.users.some(p => p.id === currentUser.id) === true ? true : false;
 
     return (
         <Segment.Group>
@@ -54,19 +48,18 @@ export function ActivityListItem({activity}: ActivityListItemProps) {
                         <Item.Content>
                             <Item.Header as='h2'>{activity.title}</Item.Header>
                             <Item.Meta>Hosted by Sael</Item.Meta>
-                            {
-                                currentUserStatus != null &&
-                                (
-                                    <Item.Meta>
-                                        {
-                                            currentUserStatus === 'host' ?
-                                            (<Label basic color='orange'> You are hosting this activity </Label>)
-                                            :
-                                            (<Label basic color='blue'> You are going to this activity </Label>)
-                                        }
-                                    </Item.Meta>
-                                )
-                            }
+
+                                <Item.Meta>
+                                    {
+                                        isHost() ?
+                                        (<Label basic color='orange'> You are hosting this activity </Label>)
+                                        : 
+                                        isAttending() ?
+                                        (<Label basic color='blue'> You are going to this activity </Label>)
+                                        : null
+                                    }
+                                </Item.Meta>
+
                         </Item.Content>
                     </Item>
                 </Item.Group>
@@ -81,9 +74,38 @@ export function ActivityListItem({activity}: ActivityListItemProps) {
 
             <Segment>
                 <List horizontal>
-                    <List.Item>
-                        <Item.Image src={`/assets/user.png`} size='mini' circular inline/>
-                    </List.Item>
+                    {
+                        activity.users.map(user => (
+                            <List.Item key={user.id}>
+                                <Popup flowing hoverable
+                                    trigger={
+                                        <Item.Image src={`/assets/user.png`} size='mini' circular inline/>
+                                    }
+                                >
+                                    <Popup.Content>
+                                        <Card>
+                                            <Card.Header style={{textAlign: 'center'}}>
+                                                <Item.Image src={`/assets/user.png`} size='small'/>
+                                            </Card.Header>
+                                            <Card.Content>
+                                            <Card.Header>{user.displayName}</Card.Header>
+                                            <Card.Meta>
+                                                <span className='date'>Joined in 2015</span>
+                                            </Card.Meta>
+                                            <Card.Description>
+                                                Bio goes here
+                                            </Card.Description>
+                                            </Card.Content>
+                                            <Card.Content extra>
+                                                <Icon name='user' />
+                                                22 Followers
+                                            </Card.Content>
+                                        </Card>
+                                    </Popup.Content>
+                                </Popup>
+                            </List.Item>
+                        ))
+                    }
                 </List>
             </Segment>
 

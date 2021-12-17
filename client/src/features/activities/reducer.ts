@@ -1,13 +1,15 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import { ActivitiesApis } from '../../app/api/agent'
-import { Activity } from './models';
+import { RootState } from '../../app/redux/rootReducer';
+import { User } from '../users/models';
+import { Activity, EditActivityModel, mapEditActivityModel } from './models';
 
 export type ActivitiesState = {
     activitiesRegistry: {[key: string]: Activity};
     loading: boolean;
     submitting: boolean;
     activityComment: string;
-    activity: Activity | null;
+    activity: EditActivityModel | null;
     validationErrors: string[];
 }
 
@@ -26,17 +28,44 @@ export const deleteActivity = createAsyncThunk('activities/deleteActivity', Acti
 export const createActivity = createAsyncThunk('activities/createActivity', ActivitiesApis.create);
 export const updateActivity = createAsyncThunk('activities/updateActivity', ActivitiesApis.update);
 
+export const attendActivity = createAsyncThunk<{activityId: string, currentUser: User | null}, string, {state: RootState}>(
+  'activities/attendActivity',
+  async (id, thunkApi) => {
+    ActivitiesApis.attend(id);
+    const {users} =  thunkApi.getState();
+    return {
+      activityId: id,
+      currentUser: users.currentUser
+    };
+});
+
+export const cancelActivityAttendance = createAsyncThunk<{activityId: string, currentUserId?: string}, string, {state: RootState}>(
+  'activities/cancelActivityAttendance',
+  async (id, thunkApi) => {
+    ActivitiesApis.unattend(id);
+    const {users} =  thunkApi.getState();
+    return {
+      activityId: id,
+      currentUserId: users.currentUser.id
+    };
+});
+
 const activitiesSlice = createSlice({
   name: 'activities',
   initialState,
   // add your non-async reducers here
   reducers: {
-    setActivityReducer: (state, action: PayloadAction<Activity>) => {
+    setActivityReducer: (state, action: PayloadAction<EditActivityModel>) => {
       state.activity = action.payload;
       return state;
     },
     setActivityCommentReducer: (state, action: PayloadAction<string>) => {
       state.activityComment = action.payload;
+      return state;
+    },
+    setFormActivityReducer: (state, action: PayloadAction<string>) => {
+      const data = state.activitiesRegistry[action.payload];
+      state.activity = mapEditActivityModel(data);
       return state;
     },
     clearActivityReducer: (state) => {
@@ -73,13 +102,42 @@ const activitiesSlice = createSlice({
       });
       builder
       .addCase(getActivity.fulfilled, (state, action) => {
-        state.activity = action.payload;
-        const {activity, activitiesRegistry} = state;
-
-        if(!activitiesRegistry[activity.id]){
-          activitiesRegistry[activity.id] = activity;
-        }
+        const data = action.payload;
+        state.activitiesRegistry[data.id] = data;
         state.loading = false;
+        return state;
+      });
+
+      builder
+      .addCase(attendActivity.pending, (state) => {
+        state.submitting = true;
+        return state;
+      });
+      builder
+      .addCase(attendActivity.fulfilled, (state, action) => {
+        const {activityId, currentUser} = action.payload;
+
+        if(currentUser)
+          state.activitiesRegistry[activityId].users.push(currentUser);
+
+        state.submitting = false;
+        return state;
+      });
+
+      builder
+      .addCase(cancelActivityAttendance.pending, (state) => {
+        state.submitting = true;
+        return state;
+      });
+      builder
+      .addCase(cancelActivityAttendance.fulfilled, (state, action) => {
+        const {activityId, currentUserId} = action.payload;
+
+        const attendees = state.activitiesRegistry[activityId].users;
+        const index = attendees.findIndex(p => p.id === currentUserId);
+        attendees.splice(index, 1);
+
+        state.submitting = false;
         return state;
       });
       
@@ -146,4 +204,4 @@ const activitiesSlice = createSlice({
 
 export const activitiesReducer = activitiesSlice.reducer;
 
-export const {setActivityReducer, clearActivityReducer, setActivityCommentReducer, setValidationErrorsReducer} = activitiesSlice.actions;
+export const {setActivityReducer, clearActivityReducer, setActivityCommentReducer, setValidationErrorsReducer, setFormActivityReducer} = activitiesSlice.actions;

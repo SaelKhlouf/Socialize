@@ -43,7 +43,7 @@ export default function NavBar() {
                     <Menu.Menu position='right'>
                         <Menu.Item>
                             <Image src={`/assets/user.png`} size='mini' inline circular style={{marginRight: '1em'}}/>
-                            <p>{currentUser?.displayName}</p>
+                            <p>{currentUser.displayName}</p>
                         </Menu.Item>
 
                         <Dropdown item>
