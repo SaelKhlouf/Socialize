@@ -17,18 +17,19 @@ using System.Threading.Tasks;
 using API.Filters;
 using API.Middlewares;
 using Domain.Activities;
+using Domain.Core;
 using FluentValidation.AspNetCore;
 
 namespace API
 {
     public class Startup
     {
-        private readonly IConfiguration _config;
+        private readonly IConfiguration _configuration;
         private readonly string _myAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
-        public Startup(IConfiguration config)
+        public Startup(IConfiguration configuration)
         {
-            _config = config;
+            _configuration = configuration;
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -47,11 +48,13 @@ namespace API
                             ActivityValidator>(); // the assembly of ActivityValidator is the Domain project !, so all validators in Domain project will be registered.
                 });
 
-            services.AddApplicationServices(_config);
-            services.AddIdentityServices(_config);
+            services.AddSingleton(_configuration.Get<Config>());
+
+            services.AddApplicationServices();
+            services.AddIdentityServices();
             services.AddHttpContextAccessor();
 
-            services.AddRequirementsServices(_config);
+            services.AddRequirementsServices();
 
             services.Configure<ApiBehaviorOptions>(options =>
             {

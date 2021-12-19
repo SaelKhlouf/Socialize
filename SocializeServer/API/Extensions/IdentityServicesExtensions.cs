@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using API.Authentication;
+using Domain.Core;
 using Domain.Core.UserAccessor;
 using Domain.Users;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -17,7 +18,7 @@ namespace API.Extensions
 {
     public static class IdentityServicesExtensions
     {
-        public static void AddIdentityServices(this IServiceCollection services, IConfiguration config)
+        public static void AddIdentityServices(this IServiceCollection services)
         {
             services.AddIdentityCore<AppUser>(opt =>
                 {
@@ -30,8 +31,16 @@ namespace API.Extensions
             services.AddScoped<TokenService>();
             services.AddSingleton<IUserAccessor, UserAccessor>();
 
-            var jwtKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JwtKey"]));
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            using (var serviceProvider = services.BuildServiceProvider())
+            {
+                var config = serviceProvider.GetService<Config>();
+                if (config == null)
+                {
+                    throw new Exception("AppSettings are not provided.");
+                }
+
+                var jwtKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config.Jwt.JwtKey));
+                services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(opt =>
                 {
                     opt.TokenValidationParameters = new TokenValidationParameters
@@ -39,9 +48,11 @@ namespace API.Extensions
                         ValidateIssuerSigningKey = true, // validate if the token is actually was generated via IssuerSigningKey (JwtKey) "the public key"
                         IssuerSigningKey = jwtKey, // the public key JwtKey
                         ValidateIssuer = false,
-                        ValidateAudience = false
+                        ValidateAudience = false,
+                        RequireExpirationTime = true
                     };
                 });
+            }
         }
     }
 }

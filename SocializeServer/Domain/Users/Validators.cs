@@ -17,4 +17,19 @@ namespace Domain.Users
                 .NotEmpty();
         }
     }
+
+    public class UserRegisterRequestValidator : AbstractValidator<UserRegisterRequest>
+    {
+        public UserRegisterRequestValidator()
+        {
+            RuleFor(p => p.Email)
+                .NotEmpty();
+            RuleFor(p => p.Password)
+                .NotEmpty();
+            RuleFor(p => p.Displayname)
+                .NotEmpty();
+            RuleFor(p => p.Username)
+                .NotEmpty();
+        }
+    }
 }

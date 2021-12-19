@@ -12,7 +12,7 @@ namespace API.Extensions
 {
     public static class RequirementsServicesExtensions
     {
-        public static void AddRequirementsServices(this IServiceCollection services, IConfiguration config)
+        public static void AddRequirementsServices(this IServiceCollection services)
         {
             services.AddAuthorization(options =>
             {

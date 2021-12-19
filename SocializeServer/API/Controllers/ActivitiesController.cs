@@ -34,24 +34,24 @@ namespace API.Controllers
         [ProducesResponseType(typeof(DataList<ActivityDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get([FromQuery] PagingParams pagingParams)
         {
-            var response = await _activitiesService.ListAsync(pagingParams);
-            return Ok(_mapper.Map<DataList<ActivityDto>>(response));
+            var data = await _activitiesService.ListAsync(pagingParams);
+            return Ok(_mapper.Map<DataList<ActivityDto>>(data));
         }
 
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(ActivityDto), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetActivityById(Guid id)
         {
-            var response = await _activitiesService.GetByIdAsync(id);
-            return Ok(_mapper.Map<ActivityDto>(response));
+            var data = await _activitiesService.GetByIdAsync(id);
+            return Ok(_mapper.Map<ActivityDto>(data));
         }
 
         [HttpPost]
         [ProducesResponseType(typeof(ActivityDto), StatusCodes.Status201Created)]
         public async Task<IActionResult> Post(ActivityRequest activity)
         {
-            var response = await _activitiesService.PostAsync(activity);
-            return CreatedAtAction(nameof(GetActivityById), new { id = response.Id }, _mapper.Map<ActivityDto>(response));
+            var data = await _activitiesService.PostAsync(activity);
+            return CreatedAtAction(nameof(GetActivityById), new { id = data.Id }, _mapper.Map<ActivityDto>(data));
         }
 
         [HttpPut("{id}")]
@@ -59,8 +59,8 @@ namespace API.Controllers
         [Authorize(Policy = "IsHost")]
         public async Task<IActionResult> Update(Guid id, [FromBody] ActivityRequest activity)
         {
-            var response = await _activitiesService.UpdateAsync(id, activity);
-            return Ok(_mapper.Map<ActivityDto>(response));
+            var data = await _activitiesService.UpdateAsync(id, activity);
+            return Ok(_mapper.Map<ActivityDto>(data));
         }
 
         [HttpDelete("{id}")]

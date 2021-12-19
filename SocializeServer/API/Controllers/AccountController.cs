@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using API.Authentication;
 using AutoMapper;
+using Domain.Core.PhotoAccessor;
 using Domain.Users;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -21,13 +22,15 @@ namespace API.Controllers
         private readonly SignInManager<AppUser> _signInManager;
         private readonly IMapper _mapper;
         private readonly TokenService _tokenService;
+        private readonly IPhotoAccessor _photoAccessor;
 
-        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IMapper mapper, TokenService tokenService)
+        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IMapper mapper, TokenService tokenService, IPhotoAccessor photoAccessor)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _mapper = mapper;
             _tokenService = tokenService;
+            _photoAccessor = photoAccessor;
         }
 
         [HttpPost]

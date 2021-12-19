@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using Domain.Core;
 using Domain.Users;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -14,8 +15,8 @@ namespace API.Authentication
 {
     public class TokenService
     {
-        private readonly IConfiguration _config;
-        public TokenService(IConfiguration config)
+        private readonly Config _config;
+        public TokenService(Config config)
         {
             _config = config;
         }
@@ -24,19 +25,19 @@ namespace API.Authentication
         {
             var claims = new List<Claim>
             {
-                new Claim("id", user.Id.ToString()),
-                new Claim("email", user.Email),
-                new Claim("userName", user.UserName),
-                new Claim("displayName", user.DisplayName),
+                new ("id", user.Id.ToString()),
+                new ("email", user.Email),
+                new ("userName", user.UserName),
+                new ("displayName", user.DisplayName),
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JwtKey"]));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.Jwt.JwtKey));
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddHours(int.Parse(_config["JwtExpiryInHours"])),
+                Expires = DateTime.UtcNow.AddHours(int.Parse(_config.Jwt.JwtExpiryInHours)),
                 SigningCredentials = credentials
             };
 
