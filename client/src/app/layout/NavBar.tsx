@@ -48,7 +48,7 @@ export default function NavBar() {
 
                         <Dropdown item>
                             <Dropdown.Menu>
-                                <Dropdown.Item>Profile</Dropdown.Item>
+                                <Dropdown.Item as={NavLink} to= {`/accounts/${currentUser.userName}/profile`}>Profile</Dropdown.Item>
                                 <Dropdown.Item onClick={handleLogout}>Logout</Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>

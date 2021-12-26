@@ -1,10 +1,12 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { UsersApis } from '../../app/api/agent';
 import { decodeJwtAsUser } from '../../common/helpers';
-import { UserLoginResult, User, UserLoginRequest, UserRegisterRequest } from './models';
+import { UserLoginResult, User, UserLoginRequest, UserRegisterRequest, UploadUserImageParameters, SetUserThumbnailRequest } from './models';
+import { UploadUserImageService } from './services';
 
 export type UsersState = {
   currentUser: User; 
+  addPhotoMode: boolean;
 };
 
 const initialState : UsersState = {
@@ -14,6 +16,7 @@ const initialState : UsersState = {
     displayName: '',
     email: '',
   },
+  addPhotoMode: false
 };
 
 export const login = createAsyncThunk<UserLoginResult, UserLoginRequest, {rejectValue: any}>(
@@ -36,6 +39,31 @@ export const register = createAsyncThunk<User, UserRegisterRequest, {rejectValue
   }
 });
 
+export const uploadUserImage = createAsyncThunk<{fileName: string}, UploadUserImageParameters, {rejectValue: any}>(
+  'users/uploadUserImage',
+ async (data: UploadUserImageParameters, thunkApi) => {
+  try{
+    const {base64, publicRead} = data;
+    return await UploadUserImageService(base64, publicRead);
+  }catch(err: any){
+    return thunkApi.rejectWithValue(err.response.data);
+  }
+});
+
+export const selectUserThumbnail = createAsyncThunk<User, SetUserThumbnailRequest, {rejectValue: any}>(
+  'users/selectUserThumbnail',
+ async (data: SetUserThumbnailRequest, thunkApi) => {
+  try{
+    const {ImageName} = data;
+    return await UsersApis.setThumbnail({
+      ImageName
+    });
+  }catch(err: any){
+    return thunkApi.rejectWithValue(err.response.data);
+  }
+});
+
+
 const usersSlice = createSlice({
   name: 'users',
   initialState,
@@ -49,6 +77,10 @@ const usersSlice = createSlice({
       state.currentUser = action.payload;
       return state;
     },
+    enableAddPhotoMode: (state, action: PayloadAction<boolean>) => {
+      state.addPhotoMode = action.payload;
+      return state;
+    },
   },
   // add your async reducers in extraReducers
   extraReducers: (builder) => {
@@ -58,9 +90,20 @@ const usersSlice = createSlice({
         state.currentUser = decodeJwtAsUser(token);
         return state;
     });
+
+    builder
+    .addCase(uploadUserImage.fulfilled, (state, action) => {
+        return state;
+    });
+
+    builder
+    .addCase(selectUserThumbnail.fulfilled, (state, action) => {
+        state.currentUser.thumbnail = action.payload.thumbnail;
+        return state;
+    });
   }
 });
 
 export const usersReducer = usersSlice.reducer;
 
-export const {logoutReducer, loginReducer} = usersSlice.actions;
+export const {logoutReducer, loginReducer, enableAddPhotoMode} = usersSlice.actions;

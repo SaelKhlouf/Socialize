@@ -65,7 +65,9 @@ export default function ActivityForm() {
             dispatch(setFormActivityReducer(params.id!));
         };
 
-        handleFetchActivity();
+        if(params.id){
+            handleFetchActivity();
+        }
     }, [activitiesRegistry, dispatch, params.id]);
 
     const initialActivityValues: EditActivityModel = {

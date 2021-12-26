@@ -14,6 +14,7 @@ import { AppDispatch } from "../redux/store";
 import { useDispatch } from "react-redux";
 import { loginReducer } from "../../features/users/reducer";
 import { decodeJwtAsUser } from "../../common/helpers";
+import Profile from "../../features/users/profiles/profile";
 
 function App() {
     const dispatch = useDispatch<AppDispatch>();
@@ -44,6 +45,18 @@ function App() {
                                 <Route path="create" element={<ActivityForm />} />
                                 <Route path=":id" element={<ActivityDetails />} />
                                 <Route path=":id/edit" element={<ActivityForm />} />
+                                <Route path="*" element={<NotFound />} />
+                            </Routes>
+                        </Fragment>
+                        </Container>
+                    } />
+
+                    <Route path="accounts/*" element={
+                        <Container style={{marginTop: '6em'}}>
+                        <Fragment>   
+                            <NavBar/>
+                            <Routes>
+                                <Route path=":username/profile" element={ <Profile />} />
                                 <Route path="*" element={<NotFound />} />
                             </Routes>
                         </Fragment>

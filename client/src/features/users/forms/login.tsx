@@ -9,7 +9,7 @@ import { setModalInfoReducer, setSubmittingReducer } from "../../../common/reduc
 import { CustomTextInput } from "../../../common/form/CustomTextInput";
 import { UserLoginRequest } from "../models";
 import { login, loginReducer } from "../reducer";
-import ErrorContainer from "../../../common/Containers/ErrorContainer";
+import ErrorContainer from "../../../common/containers/ErrorContainer";
 import { LOCAL_STORAGE_KEYS } from "../../../common/constants";
 import { decodeJwtAsUser } from "../../../common/helpers";
 

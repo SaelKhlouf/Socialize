@@ -65,7 +65,9 @@ const activitiesSlice = createSlice({
     },
     setFormActivityReducer: (state, action: PayloadAction<string>) => {
       const data = state.activitiesRegistry[action.payload];
-      state.activity = mapEditActivityModel(data);
+      if(data){
+        state.activity = mapEditActivityModel(data);
+      }
       return state;
     },
     clearActivityReducer: (state) => {

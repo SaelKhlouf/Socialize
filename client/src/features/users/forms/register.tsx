@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../../../app/redux/store";
 import { RootState } from "../../../app/redux/rootReducer";
 import { UserRegisterRequest } from "../models";
-import ErrorContainer from "../../../common/Containers/ErrorContainer";
+import ErrorContainer from "../../../common/containers/ErrorContainer";
 import { register } from "../reducer";
 import { toast } from "react-toastify";
 

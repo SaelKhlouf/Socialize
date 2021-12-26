@@ -16,3 +16,12 @@ export const decodeJwtAsUser = (token: string): User => {
         email: decodedJwt.email,
     }
 }
+
+export const resolveFileNameExtension = (filename: string) => {
+    if(!filename || filename.indexOf('.') === -1)
+    {
+        return null;
+    }
+    
+    return filename.split('.').pop();
+}

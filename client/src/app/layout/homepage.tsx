@@ -4,7 +4,7 @@ import { useNavigate } from "react-router";
 import { Button, Container, Header, Image } from "semantic-ui-react";
 import { setModalInfoReducer } from "../../common/reducer";
 import { LOCAL_STORAGE_KEYS } from "../../common/constants";
-import ModalContainer from "../../common/Containers/ModalContainer";
+import ModalContainer from "../../common/containers/ModalContainer";
 import { ModalTypes } from "../../common/models";
 import { Login } from "../../features/users/forms/login";
 import { Register } from "../../features/users/forms/register";
