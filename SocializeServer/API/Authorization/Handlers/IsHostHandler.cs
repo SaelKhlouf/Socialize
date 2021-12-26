@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using API.Authentication;
 using API.Authorization.Requirements;
 using Application.Services;
-using Domain.Core.UserAccessor;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
-using Persistence;
 
 namespace API.Authorization.Handlers
 {

@@ -8,12 +8,19 @@ namespace Domain.Core.PhotoAccessor
 {
     public class GeneratePreSignedUrRequest
     {
-        public Enums.ProfilePictureExtension FileExtension { get; set; }
+        public string FileExtension { get; set; }
         public long ContentLength { get; set; }
+    }
+
+    public class PreSignedUrl
+    {
+        public string Url { get; set; }
+        public string FileName { get; set; }
     }
 
     public class PreSignedUrlDto
     {
         public string Url { get; set; }
+        public string FileName { get; set; }
     }
 }

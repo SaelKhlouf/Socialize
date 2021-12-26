@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System;
+using API.Extensions;
+using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Domain.Core.PhotoAccessor;
 using Microsoft.AspNetCore.Authorization;
@@ -10,10 +13,12 @@ namespace API.Controllers
     public class BaseController : ControllerBase
     {
         private readonly IPhotoAccessor _photoAccessor;
+        private readonly IMapper _mapper;
 
-        public BaseController(IPhotoAccessor photoAccessor)
+        public BaseController(IPhotoAccessor photoAccessor, IMapper mapper)
         {
             _photoAccessor = photoAccessor;
+            _mapper = mapper;
         }
 
         [HttpPost]
@@ -22,11 +27,10 @@ namespace API.Controllers
         [Authorize]
         public IActionResult GeneratePreSignedUrl(GeneratePreSignedUrRequest generatePreSignedUrRequest)
         {
-            var data = new PreSignedUrlDto()
-            {
-                Url = _photoAccessor.GeneratePreSignedUrl(generatePreSignedUrRequest.FileExtension, generatePreSignedUrRequest.ContentLength)
-            };
-            return Ok(data);
+            var data = _photoAccessor.GeneratePreSignedUrl(
+                generatePreSignedUrRequest.FileExtension.ParseEnum<Enums.ProfilePictureExtension>(),
+                generatePreSignedUrRequest.ContentLength);
+            return Ok(_mapper.Map<PreSignedUrlDto>(data));
         }
     }
 }

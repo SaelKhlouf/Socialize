@@ -1,42 +1,33 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using System.Threading.Tasks;
-using API.Authentication;
 using AutoMapper;
-using Domain.Core.PhotoAccessor;
+using Domain.Core;
+using Domain.Core.UserAccessor;
 using Domain.Users;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Persistence;
 
-namespace API.Controllers
+namespace Application.Services
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class AccountController : ControllerBase
+    public class AccountsService
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
-        private readonly IMapper _mapper;
         private readonly TokenService _tokenService;
-        private readonly IPhotoAccessor _photoAccessor;
+        private readonly Config _config;
+        private readonly IUserAccessor _userAccessor;
 
-        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IMapper mapper, TokenService tokenService, IPhotoAccessor photoAccessor)
+        public AccountsService(IMapper mapper, Config config, IUserAccessor userAccessor, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, TokenService tokenService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _mapper = mapper;
             _tokenService = tokenService;
-            _photoAccessor = photoAccessor;
+            _config = config;
+            _userAccessor = userAccessor;
         }
 
-        [HttpPost]
-        [ProducesResponseType(typeof(LoginDto), StatusCodes.Status200OK)]
-        [Route("login")]
-        public async Task<IActionResult> Login(UserLoginRequest userLoginRequest)
+        public async Task<AppUser> LoginAsync(UserLoginRequest userLoginRequest)
         {
             var user = await _userManager.FindByEmailAsync(userLoginRequest.Email);
             if (user == null)
@@ -50,17 +41,11 @@ namespace API.Controllers
                 throw new BadHttpRequestException("Wrong password");
             }
 
-            var token = _tokenService.CreateToken(user);
-
-            var loginDto = _mapper.Map<LoginDto>(user);
-            loginDto.Token = token;
-            return Ok(loginDto);
+            user.Token = _tokenService.CreateToken(user);
+            return user;
         }
 
-        [HttpPost]
-        [ProducesResponseType(typeof(UserDto), StatusCodes.Status201Created)]
-        [Route("register")]
-        public async Task<IActionResult> Register(UserRegisterRequest userRegisterRequest)
+        public async Task<AppUser> RegisterAsync(UserRegisterRequest userRegisterRequest)
         {
             var userNameExists = await _userManager.Users.AnyAsync(p => p.UserName.ToLower().Equals(userRegisterRequest.Username.ToLower()));
             if (userNameExists)
@@ -86,7 +71,27 @@ namespace API.Controllers
             {
                 throw new Exception("Errors while creating user: " + result.Errors);
             }
-            return Created("", _mapper.Map<UserDto>(user));
+            return user;
+        }
+
+        public async Task<AppUser> SelectMainImageAsync(SelectMainImageRequest selectMainImageRequest)
+        {
+            var userId = _userAccessor.GetCurrentUser().Id;
+            var user = await _userManager.Users.FirstOrDefaultAsync(p => p.Id == userId);
+
+            var imageName = selectMainImageRequest.ImageName;
+            var region = _config.AWS.S3.Region;
+            var bucketName = _config.AWS.S3.BucketName;
+            var photosPath = _config.AWS.S3.UsersPhotosPath;
+
+            user.MainImageUrl = @$"https://{bucketName}.s3.{region}.amazonaws.com/{photosPath}/{userId}/{imageName}";
+
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+            {
+                throw new Exception(@$"Errors while updating user {userId}: " + result.Errors);
+            }
+            return user;
         }
     }
 }

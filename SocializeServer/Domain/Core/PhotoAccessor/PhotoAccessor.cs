@@ -3,6 +3,7 @@ using Amazon.S3;
 using Amazon.S3.Model;
 using System;
 using System.Linq;
+using System.Net;
 using Amazon.Runtime;
 using Domain.Core.UserAccessor;
 using Microsoft.AspNetCore.Http;
@@ -25,7 +26,7 @@ namespace Domain.Core.PhotoAccessor
             _s3Client = new AmazonS3Client(awsCredentials, bucketRegion);
         }
 
-        public string GeneratePreSignedUrl(Enums.ProfilePictureExtension extension, long contentLength)
+        public PreSignedUrl GeneratePreSignedUrl(Enums.ProfilePictureExtension extension, long contentLength)
         {
             var maxContentLength = _config.FileUpload.UserProfilePicture.MaxFileUploadSizeInMB * 1000000;
             if (contentLength > maxContentLength)
@@ -34,15 +35,27 @@ namespace Domain.Core.PhotoAccessor
             }
 
             var currentUser = _userAccessor.GetCurrentUser();
+            var fileName = $@"{DateTime.Now.ToString("s")}.{extension}";
+
             GetPreSignedUrlRequest request = new GetPreSignedUrlRequest
             {
                 BucketName = _config.AWS.S3.BucketName,
-                Key =  $@"${currentUser.Id}.${extension}",
+                Key =  $@"{_config.AWS.S3.UsersPhotosPath}/{currentUser.Id}/{fileName}",
                 Expires = DateTime.UtcNow.AddMinutes(_config.FileUpload.UserProfilePicture.PreSignedUrlDurationInMinutes),
                 Verb = HttpVerb.PUT,
-                Headers = {ContentLength = contentLength}
+                Headers =
+                {
+                    ContentLength = contentLength,
+                    ContentType = $@"image/{extension}"
+                }
             };
-            return _s3Client.GetPreSignedURL(request);
+
+            request.Headers["x-amz-tagging"] = "public=true";
+            return new PreSignedUrl()
+            {
+                Url = _s3Client.GetPreSignedURL(request),
+                FileName = fileName
+            };
         }
     }
 }

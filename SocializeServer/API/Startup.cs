@@ -13,6 +13,7 @@ using Persistence;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using API.Filters;
 using API.Middlewares;
@@ -40,6 +41,11 @@ namespace API
                 .AddControllers(conf =>
                 {
                     conf.Filters.Add<RequestValidationFilter>();
+
+                })
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 })
                 .AddFluentValidation(config =>
                 {

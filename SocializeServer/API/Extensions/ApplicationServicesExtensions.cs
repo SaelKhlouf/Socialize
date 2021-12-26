@@ -1,9 +1,6 @@
 ﻿using System;
-using API.Authentication;
-using API.Filters;
 using Application.Services;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Persistence;
@@ -42,6 +39,7 @@ namespace API.Extensions
             services.AddScoped<ActivitiesAttendeesRepository>();
             
             services.AddScoped<ActivitiesService>();
+            services.AddScoped<AccountsService>();
             services.AddSingleton<IPhotoAccessor, PhotoAccessor>();
         }
     }

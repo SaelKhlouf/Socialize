@@ -10,9 +10,9 @@ namespace Domain.Core.PhotoAccessor
     {
         public enum ProfilePictureExtension
         {
-            PNG,
-            JPG,
-            JPEG
+            png,
+            jpg,
+            jpeg
         }
     }
 }

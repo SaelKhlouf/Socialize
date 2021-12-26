@@ -32,4 +32,13 @@ namespace Domain.Users
                 .NotEmpty();
         }
     }
+
+    public class UserChooseMainImageRequestValidator : AbstractValidator<SelectMainImageRequest>
+    {
+        public UserChooseMainImageRequestValidator()
+        {
+            RuleFor(p => p.ImageName)
+                .NotEmpty();
+        }
+    }
 }

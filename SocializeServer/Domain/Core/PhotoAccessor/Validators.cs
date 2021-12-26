@@ -13,9 +13,11 @@ namespace Domain.Core.PhotoAccessor
         {
             RuleFor(p => p.ContentLength)
                 .NotEmpty();
+
             RuleFor(p => p.FileExtension)
-                .IsInEnum()
-                    .WithMessage("Extension provided is not supported");
+                .NotEmpty()
+                .Must(p => Enum.GetNames(typeof(Enums.ProfilePictureExtension)).ToList().Contains(p.ToLower()))
+                    .WithMessage("Image extension provided is not supported");
         }
     }
 }

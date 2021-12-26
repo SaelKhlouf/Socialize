@@ -11,7 +11,7 @@ using Domain.Users;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
-namespace API.Authentication
+namespace Application.Services
 {
     public class TokenService
     {

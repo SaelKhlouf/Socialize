@@ -12,6 +12,8 @@ namespace Domain.Users
     {
         public string DisplayName { get; set; }
         public string Bio { get; set; }
+        public string Token { get; set; }
+        public string MainImageUrl { get; set; }
         public ICollection<ActivityAttendee.ActivityAttendee> ActivityAttendees { get; set; }
     }
 }

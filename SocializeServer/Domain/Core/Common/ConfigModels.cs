@@ -49,6 +49,7 @@ namespace Domain.Core
     {
         public string BucketName { get; set; }
         public string Region { get; set; }
+        public string UsersPhotosPath { get; set; }
     }
 
     public class UserProfilePicture

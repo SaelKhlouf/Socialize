@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using API.Authentication;
+using Application.Services;
 using Domain.Core;
 using Domain.Core.UserAccessor;
 using Domain.Users;
