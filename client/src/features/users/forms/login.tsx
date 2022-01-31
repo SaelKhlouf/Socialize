@@ -5,20 +5,22 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import { RootState } from "../../../app/redux/rootReducer";
 import { AppDispatch } from "../../../app/redux/store";
-import { setModalInfoReducer, setSubmittingReducer } from "../../../common/reducer";
+import { setModalInfoReducer } from "../../../common/reducer";
 import { CustomTextInput } from "../../../common/form/CustomTextInput";
 import { UserLoginRequest } from "../models";
-import { login, loginReducer } from "../reducer";
+import { fetchCurrentUserInfo, login } from "../reducer";
 import ErrorContainer from "../../../common/containers/ErrorContainer";
+import { useState } from "react";
 import { LOCAL_STORAGE_KEYS } from "../../../common/constants";
-import { decodeJwtAsUser } from "../../../common/helpers";
 
 export function Login(){
     const dispatch = useDispatch<AppDispatch>();
     let navigate = useNavigate();
     
-    let {submitting, modalInfo} = useSelector((state: RootState) => state.common);
+    let {modalInfo} = useSelector((state: RootState) => state.common);
 
+    const [submitting, setSubmitting] = useState<boolean>(false);
+    
     const initialLoginForm = {
         email: '',
         password: ''
@@ -34,15 +36,14 @@ export function Login(){
             .required('Required')
     });
 
-    const onFormSubmit = async (values: UserLoginRequest) => {
+    const onFormSubmit = async (userLoginRequest: UserLoginRequest) => {
         try{
-            const data = await dispatch(login(values)).unwrap(); //if error happened in the thunk, then the code below will not execute
-
-            window.localStorage.setItem(LOCAL_STORAGE_KEYS.JWT, data.token);
-            const user = decodeJwtAsUser(data.token);
-            dispatch(loginReducer(user));
-
-            dispatch(setSubmittingReducer(false));
+            setSubmitting(true);
+            
+            const {token} = await dispatch(login(userLoginRequest)).unwrap();
+            window.localStorage.setItem(LOCAL_STORAGE_KEYS.JWT, token);
+            
+            await dispatch(fetchCurrentUserInfo()).unwrap();
             dispatch(setModalInfoReducer({
                 showModal: false
             }));
@@ -51,6 +52,8 @@ export function Login(){
             dispatch(setModalInfoReducer({
                 submissionErrors: err.message
             }));
+        }finally{
+            setSubmitting(false);
         }
     };
     

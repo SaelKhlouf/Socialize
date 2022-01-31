@@ -1,10 +1,7 @@
 import React, { useCallback } from 'react';
-import {useDropzone, FileRejection, FileWithPath} from 'react-dropzone';
-import { useDispatch } from 'react-redux';
+import {useDropzone, FileRejection} from 'react-dropzone';
 import { Header, Icon } from 'semantic-ui-react';
-import { AppDispatch } from '../../app/redux/store';
 import { FileWithPreview } from '../models';
-import { setDropZoneInfoReducer } from '../reducer';
 
 const baseStyle = {
     flex: 1,
@@ -76,7 +73,7 @@ export default function PhotoWidgetDropzone(props: Props) {
 
                 console.log('errors: ' + errors);
             }
-    },[props.filesType, props.maxFilesNumber]);
+    },[props]);
 
     const {
         getRootProps,

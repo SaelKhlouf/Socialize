@@ -1,12 +1,16 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { UsersApis } from '../../app/api/agent';
-import { decodeJwtAsUser } from '../../common/helpers';
-import { UserLoginResult, User, UserLoginRequest, UserRegisterRequest, UploadUserImageParameters, SetUserThumbnailRequest } from './models';
+import { BaseApis, UsersApis } from '../../app/api/agent';
+import { URLS } from '../../app/api/constants';
+import { LOCAL_STORAGE_KEYS } from '../../common/constants';
+import { UserLoginResult, User, UserLoginRequest, UserRegisterRequest } from './models';
 import { UploadUserImageService } from './services';
 
 export type UsersState = {
-  currentUser: User; 
-  addPhotoMode: boolean;
+  currentUser: User;
+  photos: {
+    addPhotoMode: boolean;
+  },
+  fetchedUserDetails: User | null;
 };
 
 const initialState : UsersState = {
@@ -15,8 +19,12 @@ const initialState : UsersState = {
     userName: '',
     displayName: '',
     email: '',
+    photos: []
   },
-  addPhotoMode: false
+  photos: {
+    addPhotoMode: false,
+  },
+  fetchedUserDetails: null,
 };
 
 export const login = createAsyncThunk<UserLoginResult, UserLoginRequest, {rejectValue: any}>(
@@ -39,30 +47,11 @@ export const register = createAsyncThunk<User, UserRegisterRequest, {rejectValue
   }
 });
 
-export const uploadUserImage = createAsyncThunk<{fileName: string}, UploadUserImageParameters, {rejectValue: any}>(
-  'users/uploadUserImage',
- async (data: UploadUserImageParameters, thunkApi) => {
-  try{
-    const {base64, publicRead} = data;
-    return await UploadUserImageService(base64, publicRead);
-  }catch(err: any){
-    return thunkApi.rejectWithValue(err.response.data);
-  }
-});
-
-export const selectUserThumbnail = createAsyncThunk<User, SetUserThumbnailRequest, {rejectValue: any}>(
-  'users/selectUserThumbnail',
- async (data: SetUserThumbnailRequest, thunkApi) => {
-  try{
-    const {ImageName} = data;
-    return await UsersApis.setThumbnail({
-      ImageName
-    });
-  }catch(err: any){
-    return thunkApi.rejectWithValue(err.response.data);
-  }
-});
-
+export const uploadUserImage = createAsyncThunk('users/uploadUserImage', UploadUserImageService);
+export const fetchCurrentUserInfo = createAsyncThunk('users/fetchCurrentUserInfo', UsersApis.info);
+export const fetchUserDetails = createAsyncThunk('users/fetchUserDetails', UsersApis.fetchUserDetails);
+export const selectUserThumbnail = createAsyncThunk('users/selectUserThumbnail', UsersApis.setThumbnail);
+export const deleteUserImage = createAsyncThunk('users/deleteUserImage', UsersApis.delete);
 
 const usersSlice = createSlice({
   name: 'users',
@@ -71,29 +60,34 @@ const usersSlice = createSlice({
   reducers: {
     logoutReducer: (state) => {
       state = initialState;
-      return state;
-    },
-    loginReducer: (state, action: PayloadAction<User>) => {
-      state.currentUser = action.payload;
+      window.localStorage.removeItem(LOCAL_STORAGE_KEYS.JWT);
       return state;
     },
     enableAddPhotoMode: (state, action: PayloadAction<boolean>) => {
-      state.addPhotoMode = action.payload;
+      state.photos.addPhotoMode = action.payload;
       return state;
     },
   },
   // add your async reducers in extraReducers
   extraReducers: (builder) => {
     builder
-    .addCase(login.fulfilled, (state, action) => {
-        const {token} = action.payload;
-        state.currentUser = decodeJwtAsUser(token);
-        return state;
+    .addCase(uploadUserImage.fulfilled, (state, action) => {
+      const image = `${URLS.AWS_S3_PRESIGNED}/users-profiles-images/${state.currentUser.id}/${action.payload.image}`;
+      state.fetchedUserDetails?.photos?.push(image);
+      
+      state.photos.addPhotoMode = false;
+      return state;
     });
 
     builder
-    .addCase(uploadUserImage.fulfilled, (state, action) => {
-        return state;
+    .addCase(deleteUserImage.fulfilled, (state, action) => {
+      const image = `${URLS.AWS_S3_PRESIGNED}/users-profiles-images/${state.currentUser.id}/${action.payload}`;
+      if(state.fetchedUserDetails){
+        state.fetchedUserDetails.photos = state.fetchedUserDetails.photos.filter(p => p !== image);
+      }
+
+      state.photos.addPhotoMode = false;
+      return state;
     });
 
     builder
@@ -101,9 +95,24 @@ const usersSlice = createSlice({
         state.currentUser.thumbnail = action.payload.thumbnail;
         return state;
     });
+
+    builder
+    .addCase(fetchUserDetails.fulfilled, (state, action) => {
+      const data = action.payload;
+      state.fetchedUserDetails = data;
+      return state;
+    });
+
+    builder
+    .addCase(fetchCurrentUserInfo.fulfilled, (state, action) => {
+      const data = action.payload;
+      state.currentUser = data;
+      return state;
+    });
+  
   }
 });
 
 export const usersReducer = usersSlice.reducer;
 
-export const {logoutReducer, loginReducer, enableAddPhotoMode} = usersSlice.actions;
+export const {logoutReducer, enableAddPhotoMode} = usersSlice.actions;

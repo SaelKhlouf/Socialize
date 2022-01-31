@@ -20,6 +20,7 @@ export interface User {
     displayName: string;
     email: string;
     thumbnail?: string;
+    photos: string[];
 }
 
 export interface GeneratePresignedUrlRequest {
@@ -33,10 +34,14 @@ export interface GeneratePresignedUrlResult {
 }
 
 export interface SetUserThumbnailRequest {
-    ImageName: string;
+    imageName: string;
 }
 
 export interface UploadUserImageParameters {
-    base64: string;
+    blob: Blob;
     publicRead: boolean;
+}
+
+export interface DeleteUserImageRequest {
+    imageName: string;
 }

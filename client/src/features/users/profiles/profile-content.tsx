@@ -5,16 +5,16 @@ import { AppDispatch } from "../../../app/redux/store";
 import PhotoUploadWidget from "../../../common/photoUpload/PhotoUploadWidget";
 import { User } from "../models";
 import { enableAddPhotoMode } from "../reducer";
-import AddPhotoPane from "./add-photo-pane";
 import PhotosPane from "./photos-pane";
 
 interface Props {
     currentUser: User;
+    fetchedUserDetails: User | null;
 }
 
-export default function ProfileContent({currentUser}: Props){
+export default function ProfileContent({currentUser, fetchedUserDetails}: Props){
     const dispatch = useDispatch<AppDispatch>();
-    const {addPhotoMode} = useSelector((state: RootState) => state.users);
+    const {addPhotoMode} = useSelector((state: RootState) => state.users.photos);
     
     const panes = [
         { menuItem: 'About', render: () => <Tab.Pane>Tab 1 Content</Tab.Pane> },
@@ -45,7 +45,7 @@ export default function ProfileContent({currentUser}: Props){
                     addPhotoMode ?
                     <PhotoUploadWidget />
                     :
-                    <PhotosPane /> 
+                    <PhotosPane photos={fetchedUserDetails?.photos || []} thumbnail={currentUser.thumbnail} /> 
                 }
                 
 

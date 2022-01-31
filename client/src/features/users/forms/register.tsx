@@ -1,6 +1,6 @@
 import { Formik, Form } from "formik";
 import { Button } from "semantic-ui-react";
-import { setModalInfoReducer, setSubmittingReducer } from "../../../common/reducer";
+import { setModalInfoReducer } from "../../../common/reducer";
 import { CustomTextInput } from "../../../common/form/CustomTextInput";
 import * as Yup from 'yup';
 import { useDispatch, useSelector } from "react-redux";
@@ -10,12 +10,14 @@ import { UserRegisterRequest } from "../models";
 import ErrorContainer from "../../../common/containers/ErrorContainer";
 import { register } from "../reducer";
 import { toast } from "react-toastify";
+import { useState } from "react";
 
 export function Register(){
     const dispatch = useDispatch<AppDispatch>();
 
-    let {submitting, modalInfo} = useSelector((state: RootState) => state.common);
-
+    let {modalInfo} = useSelector((state: RootState) => state.common);
+    const [submitting, setSubmitting] = useState<boolean>(false);
+    
     const initialLoginForm = {
         userName: '',
         displayName: '',
@@ -38,16 +40,17 @@ export function Register(){
 
     const onFormSubmit = async (values: UserRegisterRequest) => {
         try{
+            setSubmitting(true);
             await dispatch(register(values)).unwrap(); 
             dispatch(setModalInfoReducer({
                 showModal: false
             }));
-            dispatch(setSubmittingReducer(false));
-            toast.success('Registration succeeded.');
         }catch(err: any){
             dispatch(setModalInfoReducer({
                 submissionErrors: err.message
             }));
+        }finally{
+            setSubmitting(false);
         }
     };
     

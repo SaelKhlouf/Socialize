@@ -2,7 +2,7 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 import { LOCAL_STORAGE_KEYS } from "../../common/constants";
 import { DataList } from "../../common/models";
 import { Activity, CreateActivityModel, EditActivityModel } from "../../features/activities/models";
-import { GeneratePresignedUrlRequest, GeneratePresignedUrlResult, SetUserThumbnailRequest, User, UserLoginRequest, UserLoginResult, UserRegisterRequest } from "../../features/users/models";
+import { DeleteUserImageRequest, GeneratePresignedUrlRequest, GeneratePresignedUrlResult, SetUserThumbnailRequest, User, UserLoginRequest, UserLoginResult, UserRegisterRequest } from "../../features/users/models";
 import { URLS } from "./constants";
 
 axios.interceptors.request.use(async (request) => {
@@ -19,9 +19,10 @@ axios.interceptors.request.use(async (request) => {
 
 //First parameter is when success, second is when fail (error thrown)
 axios.interceptors.response.use(async (response) => {
-    await sleep(1000);
+    await sleep(5000);
     return response;
 },async (error: AxiosError) => {
+    await sleep(5000);
     return Promise.reject(error);
 });
 
@@ -41,8 +42,8 @@ export const Requests = {
 export const ActivitiesApis = {
     list: () => Requests.get<DataList<Activity>>("/Activities"),
     details: (id: string) => Requests.get<Activity>(`/Activities/${id}`),
-    create: (body: CreateActivityModel) => Requests.post<Activity>("/Activities", body),
-    update: (body: EditActivityModel) => Requests.put<Activity>(`/Activities/${body.id}`, body),
+    create: (data: CreateActivityModel) => Requests.post<Activity>("/Activities", data),
+    update: (data: EditActivityModel) => Requests.put<Activity>(`/Activities/${data.id}`, data),
     delete: async (id: string) => {
         await Requests.delete<void>(`/Activities/${id}`);
         return id;
@@ -58,13 +59,16 @@ export const ActivitiesApis = {
 }
 
 export const UsersApis = {
-    login: (body: UserLoginRequest) => Requests.post<UserLoginResult>("/Accounts/login", body),
-    register: (body: UserRegisterRequest) => Requests.post<User>("/Accounts/register", body),
-    setThumbnail: (body: SetUserThumbnailRequest) => Requests.put<User>("/Accounts/thumbnail", body),
+    login: (data: UserLoginRequest) => Requests.post<UserLoginResult>("/Accounts/login", data),
+    register: (data: UserRegisterRequest) => Requests.post<User>("/Accounts/register", data),
+    info: () => Requests.get<User>(`/Accounts/info`),
+    setThumbnail: (data: SetUserThumbnailRequest) => Requests.put<User>("/Accounts/thumbnail", data),
+    fetchUserDetails: (id: string) => Requests.get<User>(`/Accounts/${id}/details`),
+    delete: (data: DeleteUserImageRequest) => Requests.delete<void>(`/Accounts/photos/${data.imageName}`).then(() => data.imageName),
 }
 
 export const BaseApis = {
-    generatePresignedUrl: (body: GeneratePresignedUrlRequest) => Requests.post<GeneratePresignedUrlResult>("/generate-presigned-url", body),
+    generateUploadPresignedUrl: (data: GeneratePresignedUrlRequest) => Requests.post<GeneratePresignedUrlResult>("/aws/presigned-urls/upload", data),
 }
 
 //External

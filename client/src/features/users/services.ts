@@ -1,28 +1,26 @@
 import { AWSApis, BaseApis } from "../../app/api/agent";
+import { UploadUserImageParameters } from "./models";
 
-//@ts-ignore
-import dataURLtoBlob from 'blueimp-canvas-to-blob';
-
-export const UploadUserImageService = async (base64: string, publicRead: boolean) => {
-    const blob: BlobPart = dataURLtoBlob(base64);
-    const body = new File(
+export const UploadUserImageService = async ({blob, publicRead}: UploadUserImageParameters) => {
+    const file = new File(
         [blob],
         '',
         { type: 'image/png' }
     );
 
-    const extension = body.type.replace("image/", "");
+    const extension = file.type.replace("image/", "");
     const headers = {
-        'Content-Type': body.type,
+        'Content-Type': file.type,
         'X-AMZ-Tagging': `public=${publicRead}`,
     };
 
-    const {url, fileName} = await BaseApis.generatePresignedUrl({
+    const {url, fileName} = await BaseApis.generateUploadPresignedUrl({
         FileExtension: extension,
-        ContentLength: body.size
+        ContentLength: file.size
     });
-    await AWSApis.putS3BucketObject(url, body, headers);
+    await AWSApis.putS3BucketObject(url, file, headers);
+    
     return {
-        fileName: fileName
+        image: fileName
     };
 }

@@ -1,30 +1,55 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Grid, Header, Button } from "semantic-ui-react";
+import { RootState } from "../../app/redux/rootReducer";
+import { AppDispatch } from "../../app/redux/store";
+import { uploadUserImage } from "../../features/users/reducer";
 import ErrorContainer from "../containers/ErrorContainer";
 import { FileWithPreview } from "../models";
 import PhotoWidgetCropper from "./PhotoWidgetCropper";
 import PhotoWidgetDropzone from "./PhotoWidgetDropzone";
 
 export default function PhotoUploadWidget(){
+    const dispatch = useDispatch<AppDispatch>();
+
     const [files, setFiles] = useState<FileWithPreview[]>([]);
     const [errors, setErrors] = useState<string[]>([]);
     const [cropper, setCropper] = useState<Cropper>();
 
+    const [submitting, setSubmitting] = useState<boolean>(false);
+
     const onCrop = () => {
-        if (cropper) {
-            cropper.getCroppedCanvas().toBlob(blob => {
-                //upload photo here
-                console.log('files[0]' + files[0].path);
+        if (!cropper) {
+            return;
+        }
+        setSubmitting(true);
+
+        try{
+            cropper.getCroppedCanvas().toBlob(async (blob) => {
+                await dispatch(uploadUserImage({
+                    blob: blob!,
+                    publicRead: true
+                })).unwrap();
             });
+        }catch(err){
+        }finally{
+            setSubmitting(false);
         }
     };
 
-    // useEffect(() => {
-    //     return () => {
-    //         files.forEach((file: any) => URL.revokeObjectURL(file.preview))
-    //     }
-    // }, [files]);
+    const onClose = () => {
+        setFiles([]);
+        setErrors([]);
+        setCropper(undefined);
+    }
 
+    //When you supply 'return' in useEffect, the code will be called when the component is destroyed (removed)
+    useEffect(() => {
+        return () => {
+            console.log('unmount: clear DOMStrings');
+            files.forEach((file: any) => URL.revokeObjectURL(file.preview));
+        }
+    }, [files]);
 
     return (
         <Grid>
@@ -72,14 +97,18 @@ export default function PhotoUploadWidget(){
                 <Grid.Column width={5} />
                 
                 <Grid.Column width={5} />
-                    <Grid.Column width={5} textAlign="center">
-                    {
-                        files && files.length > 0 &&
-                        (
-                            <Button color="teal" icon="check" size='large' onClick={onCrop} /> 
-                        )
-                    }
-                    </Grid.Column>
+                
+                <Grid.Column width={5} textAlign="center">
+                {
+                    files && files.length > 0 &&
+                    (
+                        <Button.Group widths={2}>
+                            <Button color="green" icon="check" size='large' onClick={onCrop} loading={submitting} /> 
+                            <Button color="red" icon="close" size='large' onClick={onClose} disabled={submitting} /> 
+                        </Button.Group>
+                    )
+                }
+                </Grid.Column>
             </Grid.Row>
 
             <Grid.Row>

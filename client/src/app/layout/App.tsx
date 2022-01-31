@@ -1,4 +1,4 @@
-import {Fragment} from "react";
+import {Fragment, useEffect} from "react";
 import {Container} from "semantic-ui-react";
 import Dashboard from "../../features/activities/dashboard/Dashboard";
 import { Route, Routes } from "react-router-dom";
@@ -12,18 +12,18 @@ import NavBar from "./navbar";
 import { LOCAL_STORAGE_KEYS } from "../../common/constants";
 import { AppDispatch } from "../redux/store";
 import { useDispatch } from "react-redux";
-import { loginReducer } from "../../features/users/reducer";
-import { decodeJwtAsUser } from "../../common/helpers";
 import Profile from "../../features/users/profiles/profile";
+import { fetchCurrentUserInfo } from "../../features/users/reducer";
 
 function App() {
     const dispatch = useDispatch<AppDispatch>();
-    
-    const jwt = window.localStorage.getItem(LOCAL_STORAGE_KEYS.JWT);
-    if(jwt){
-        const currentUser = decodeJwtAsUser(jwt);
-        dispatch(loginReducer(currentUser));
-    }
+    useEffect(() => {
+        const jwt = window.localStorage.getItem(LOCAL_STORAGE_KEYS.JWT);
+        console.log('jwt ' + jwt);
+        if(jwt){
+            dispatch(fetchCurrentUserInfo());
+        }
+    }, [dispatch]);
 
     return (
         <Fragment>
@@ -56,7 +56,7 @@ function App() {
                         <Fragment>   
                             <NavBar/>
                             <Routes>
-                                <Route path=":username/profile" element={ <Profile />} />
+                                <Route path=":id/profile" element={ <Profile />} />
                                 <Route path="*" element={<NotFound />} />
                             </Routes>
                         </Fragment>

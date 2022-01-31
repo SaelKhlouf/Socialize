@@ -20,7 +20,6 @@ export default function NavBar() {
     }
     const handleLogout = () => {
         dispatch(logoutReducer());
-        window.localStorage.removeItem(LOCAL_STORAGE_KEYS.JWT);
         navigate('/');
     }
 
@@ -42,13 +41,13 @@ export default function NavBar() {
 
                     <Menu.Menu position='right'>
                         <Menu.Item>
-                            <Image src={`/assets/user.png`} size='mini' inline circular style={{marginRight: '1em'}}/>
+                            <Image src={currentUser.thumbnail} alt='/assets/user.png' size='mini' inline circular style={{marginRight: '1em'}}/>
                             <p>{currentUser.displayName}</p>
                         </Menu.Item>
 
                         <Dropdown item>
                             <Dropdown.Menu>
-                                <Dropdown.Item as={NavLink} to= {`/accounts/${currentUser.userName}/profile`}>Profile</Dropdown.Item>
+                                <Dropdown.Item as={NavLink} to= {`/accounts/${currentUser.id}/profile`}>Profile</Dropdown.Item>
                                 <Dropdown.Item onClick={handleLogout}>Logout</Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>
