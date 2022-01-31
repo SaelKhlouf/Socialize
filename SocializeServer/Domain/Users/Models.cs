@@ -22,7 +22,7 @@ namespace Domain.Users
     {
         public string Username { get; set; }
         public string Email { get; set; }
-        public string Displayname { get; set; }
+        public string DisplayName { get; set; }
         public string Password { get; set; }
     }
 
@@ -32,7 +32,17 @@ namespace Domain.Users
         public string UserName { get; set; }
         public string Email { get; set; }
         public string DisplayName { get; set; }
-        public string MainImageUrl { get; set; }
+        public string Thumbnail { get; set; }
+    }
+
+    public class UserDetailsDto : UserDto
+    {
+        public IEnumerable<string> Photos { get; set; }
+    }
+
+    public class UserDetails : AppUser
+    {
+        public IEnumerable<string> Photos { get; set; }
     }
 
     public class CurrentUser

@@ -8,6 +8,8 @@ namespace Domain.Core.PhotoAccessor
 {
     public interface IPhotoAccessor
     {
-        public PreSignedUrl GeneratePreSignedUrl(Enums.ProfilePictureExtension extension, long contentLength);
+        public PreSignedUrl GeneratePreSignedUrlForUpload(Enums.ProfilePictureExtension extension, long contentLength);
+        public Task<IEnumerable<string>> GetUserPhotosByPrefixAsync(string prefix);
+        public Task DeletePhotoAsync(string key);
     }
 }

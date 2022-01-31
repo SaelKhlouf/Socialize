@@ -14,6 +14,10 @@ namespace Domain.Core
 
             CreateMap<AppUser, UserDto>();
 
+            CreateMap<AppUser, UserDetails>();
+
+            CreateMap<UserDetails, UserDetailsDto>();
+
             CreateMap<AppUser, LoginDto>();
 
             CreateMap<PreSignedUrl, PreSignedUrlDto>();

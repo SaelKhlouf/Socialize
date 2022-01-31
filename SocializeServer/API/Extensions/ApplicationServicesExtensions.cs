@@ -6,6 +6,7 @@ using Microsoft.OpenApi.Models;
 using Persistence;
 using Persistence.Repositories;
 using Domain.Core;
+using Domain.Core.Common;
 using Domain.Core.PhotoAccessor;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
@@ -34,13 +35,14 @@ namespace API.Extensions
             }
 
             services.AddAutoMapper(typeof(MappingProfiles).Assembly);
-            
+
             services.AddScoped<ActivitiesRepository>();
             services.AddScoped<ActivitiesAttendeesRepository>();
-            
+
             services.AddScoped<ActivitiesService>();
             services.AddScoped<AccountsService>();
-            services.AddSingleton<IPhotoAccessor, PhotoAccessor>();
+            services.AddScoped<Utilities>();
+            services.AddScoped<IPhotoAccessor, PhotoAccessor>();
         }
     }
 }

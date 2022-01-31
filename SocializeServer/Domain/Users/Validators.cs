@@ -26,7 +26,7 @@ namespace Domain.Users
                 .NotEmpty();
             RuleFor(p => p.Password)
                 .NotEmpty();
-            RuleFor(p => p.Displayname)
+            RuleFor(p => p.DisplayName)
                 .NotEmpty();
             RuleFor(p => p.Username)
                 .NotEmpty();

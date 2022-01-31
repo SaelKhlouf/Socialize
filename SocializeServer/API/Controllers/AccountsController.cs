@@ -63,5 +63,35 @@ namespace API.Controllers
             var user = await _accountsService.SelectMainImageAsync(selectMainImageRequest);
             return Ok(_mapper.Map<UserDto>(user));
         }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(UserDetailsDto), StatusCodes.Status200OK)]
+        [Route("{id}/details")]
+        [Authorize]
+        public async Task<IActionResult> GetUserDetailsAsync(Guid id)
+        {
+            var user = await _accountsService.GetUserDetailsAsync(id);
+            return Ok(_mapper.Map<UserDetailsDto>(user));
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
+        [Route("info")]
+        [Authorize]
+        public async Task<IActionResult> GetUserInfoAsync()
+        {
+            var user = await _accountsService.GetUserInfoAsync();
+            return Ok(_mapper.Map<UserDto>(user));
+        }
+
+        [HttpDelete]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [Route("photos/{fileName}")]
+        [Authorize]
+        public async Task<IActionResult> DeleteUserPhotoAsync(string fileName)
+        {
+            await _accountsService.DeleteUserPhotoAsync(fileName);
+            return Ok();
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using API.Extensions;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
@@ -23,11 +24,11 @@ namespace API.Controllers
 
         [HttpPost]
         [ProducesResponseType(typeof(PreSignedUrlDto), StatusCodes.Status200OK)]
-        [Route("generate-presigned-url")]
+        [Route("aws/presigned-urls/upload")]
         [Authorize]
-        public IActionResult GeneratePreSignedUrl(GeneratePreSignedUrRequest generatePreSignedUrRequest)
+        public IActionResult GeneratePreSignedUrlForUpload(GeneratePreSignedUrRequest generatePreSignedUrRequest)
         {
-            var data = _photoAccessor.GeneratePreSignedUrl(
+            var data = _photoAccessor.GeneratePreSignedUrlForUpload(
                 generatePreSignedUrRequest.FileExtension.ParseEnum<Enums.ProfilePictureExtension>(),
                 generatePreSignedUrRequest.ContentLength);
             return Ok(_mapper.Map<PreSignedUrlDto>(data));

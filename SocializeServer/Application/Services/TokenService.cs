@@ -27,8 +27,7 @@ namespace Application.Services
             {
                 new ("id", user.Id.ToString()),
                 new ("email", user.Email),
-                new ("userName", user.UserName),
-                new ("displayName", user.DisplayName),
+                new ("userName", user.UserName)
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.Jwt.JwtKey));
